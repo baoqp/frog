@@ -1,28 +1,25 @@
 package com.bqp.frog;
 
-import com.bqp.frog.parser.CalcLexer;
-import com.bqp.frog.parser.CalcParser;
-import com.bqp.frog.parser.EvalVisitor;
+import com.bqp.frog.parser.FrogSqlLexer;
+import com.bqp.frog.parser.FrogSqlParser;
+import com.bqp.frog.parser.FrogSqlVisitor;
+import com.bqp.frog.parser.FrogSqlVisitorImpl;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
 
-        String str = "3*5+3\n" +
-                "(3+4)*4/5\n" +
-                "a=1\n" +
-                "b=2\n" +
-                "a+b*3\n";
-
+        String str = "select a from b where c = c ";
         ANTLRInputStream input = new ANTLRInputStream(str);
-
-        CalcLexer lexer = new CalcLexer(input);
+        FrogSqlLexer lexer = new FrogSqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        CalcParser parser = new CalcParser(tokens);
-        ParseTree tree = parser.prog(); // parse
-        EvalVisitor eval = new EvalVisitor();
-        eval.visit(tree);
+        FrogSqlParser parser = new FrogSqlParser(tokens);
+        ParseTree tree = parser.sql(); // parse
+        FrogSqlVisitor visitor = new FrogSqlVisitorImpl();
+        visitor.visit(tree);
     }
 }

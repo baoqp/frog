@@ -1,0 +1,11 @@
+INSERT=1
+UPDATE=2
+DELETE=3
+SELECT=4
+FIELD=5
+BLANK=6
+TEXT=7
+'insert'=1
+'update'=2
+'delete'=3
+'select'=4

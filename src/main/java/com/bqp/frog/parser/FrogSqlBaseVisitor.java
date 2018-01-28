@@ -1,77 +1,70 @@
-// Generated from C:/code/frog/src/main/java/com/bqp/frog/parser\Calc.g4 by ANTLR 4.7
+// Generated from C:/code/frog/src/main/java/com/bqp/frog/parser\FrogSql.g4 by ANTLR 4.7
 package com.bqp.frog.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
- * This class provides an empty implementation of {@link CalcVisitor},
+ * This class provides an empty implementation of {@link FrogSqlVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public class CalcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CalcVisitor<T> {
+public class FrogSqlBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements FrogSqlVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitProg(CalcParser.ProgContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSql(FrogSqlParser.SqlContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPrintExpr(CalcParser.PrintExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlock(FrogSqlParser.BlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAssign(CalcParser.AssignContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInsert(FrogSqlParser.InsertContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBlank(CalcParser.BlankContext ctx) { return visitChildren(ctx); }
+	@Override public T visitUpdate(FrogSqlParser.UpdateContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParens(CalcParser.ParensContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDelete(FrogSqlParser.DeleteContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMulDiv(CalcParser.MulDivContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSelect(FrogSqlParser.SelectContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAddSub(CalcParser.AddSubContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlank(FrogSqlParser.BlankContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitId(CalcParser.IdContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitInt(CalcParser.IntContext ctx) { return visitChildren(ctx); }
+	@Override public T visitText(FrogSqlParser.TextContext ctx) { return visitChildren(ctx); }
 }
