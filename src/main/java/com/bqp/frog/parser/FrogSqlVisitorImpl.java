@@ -3,18 +3,6 @@ package com.bqp.frog.parser;
 public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
 
-    @Override
-    public String visitSql(FrogSqlParser.SqlContext ctx) {
-        System.out.println(ctx.getText());
-        return super.visitSql(ctx);
-    }
-
-    @Override
-    public String visitBlock(FrogSqlParser.BlockContext ctx) {
-        System.out.println(ctx.getText());
-        return super.visitBlock(ctx);
-    }
-
 
     @Override
     public String visitInsert(FrogSqlParser.InsertContext ctx) {
@@ -27,6 +15,12 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
     public String visitUpdate(FrogSqlParser.UpdateContext ctx) {
         System.out.println("--update--");
         return super.visitUpdate(ctx);
+    }
+
+    @Override public String visitParameter(FrogSqlParser.ParameterContext ctx) {
+        System.out.println("--parameter--");
+        System.out.println(ctx.getText());
+        return visitChildren(ctx);
     }
 
 

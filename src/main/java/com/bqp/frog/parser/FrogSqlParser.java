@@ -17,20 +17,20 @@ public class FrogSqlParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		INSERT=1, UPDATE=2, DELETE=3, SELECT=4, COLON=5, NUMBER=6, DOT=7, FIELD=8, 
-		JDBC_PARAMETER=9, BLANK=10, TEXT=11;
+		INSERT=1, UPDATE=2, DELETE=3, SELECT=4, DOT=5, COLON=6, NUMBER=7, FIELD=8, 
+		BLANK=9;
 	public static final int
-		RULE_sql = 0, RULE_block = 1, RULE_dml = 2, RULE_statement = 3;
+		RULE_sql = 0, RULE_dml = 1, RULE_statement = 2, RULE_jdbcParameter = 3;
 	public static final String[] ruleNames = {
-		"sql", "block", "dml", "statement"
+		"sql", "dml", "statement", "jdbcParameter"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'insert'", "'update'", "'delete'", "'select'", "':'", null, "'.'"
+		null, "'insert'", "'update'", "'delete'", "'select'", "'.'", "':'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "INSERT", "UPDATE", "DELETE", "SELECT", "COLON", "NUMBER", "DOT", 
-		"FIELD", "JDBC_PARAMETER", "BLANK", "TEXT"
+		null, "INSERT", "UPDATE", "DELETE", "SELECT", "DOT", "COLON", "NUMBER", 
+		"FIELD", "BLANK"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -85,8 +85,11 @@ public class FrogSqlParser extends Parser {
 		public DmlContext dml() {
 			return getRuleContext(DmlContext.class,0);
 		}
-		public BlockContext block() {
-			return getRuleContext(BlockContext.class,0);
+		public List<StatementContext> statement() {
+			return getRuleContexts(StatementContext.class);
+		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
 		}
 		public SqlContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -102,65 +105,26 @@ public class FrogSqlParser extends Parser {
 	public final SqlContext sql() throws RecognitionException {
 		SqlContext _localctx = new SqlContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_sql);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(8);
 			dml();
-			setState(9);
-			block();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class BlockContext extends ParserRuleContext {
-		public List<StatementContext> statement() {
-			return getRuleContexts(StatementContext.class);
-		}
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
-		}
-		public BlockContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_block; }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof FrogSqlVisitor ) return ((FrogSqlVisitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final BlockContext block() throws RecognitionException {
-		BlockContext _localctx = new BlockContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_block);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(12); 
+			setState(12);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			do {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COLON) | (1L << FIELD) | (1L << BLANK))) != 0)) {
 				{
 				{
-				setState(11);
+				setState(9);
 				statement();
 				}
 				}
-				setState(14); 
+				setState(14);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==BLANK || _la==TEXT );
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -224,16 +188,16 @@ public class FrogSqlParser extends Parser {
 
 	public final DmlContext dml() throws RecognitionException {
 		DmlContext _localctx = new DmlContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_dml);
+		enterRule(_localctx, 2, RULE_dml);
 		try {
-			setState(20);
+			setState(19);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INSERT:
 				_localctx = new InsertContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(16);
+				setState(15);
 				match(INSERT);
 				}
 				break;
@@ -241,7 +205,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new UpdateContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(17);
+				setState(16);
 				match(UPDATE);
 				}
 				break;
@@ -249,7 +213,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new DeleteContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(18);
+				setState(17);
 				match(DELETE);
 				}
 				break;
@@ -257,7 +221,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new SelectContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(19);
+				setState(18);
 				match(SELECT);
 				}
 				break;
@@ -296,8 +260,19 @@ public class FrogSqlParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class ParameterContext extends StatementContext {
+		public JdbcParameterContext jdbcParameter() {
+			return getRuleContext(JdbcParameterContext.class,0);
+		}
+		public ParameterContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof FrogSqlVisitor ) return ((FrogSqlVisitor<? extends T>)visitor).visitParameter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class TextContext extends StatementContext {
-		public TerminalNode TEXT() { return getToken(FrogSqlParser.TEXT, 0); }
+		public TerminalNode FIELD() { return getToken(FrogSqlParser.FIELD, 0); }
 		public TextContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -308,25 +283,33 @@ public class FrogSqlParser extends Parser {
 
 	public final StatementContext statement() throws RecognitionException {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_statement);
+		enterRule(_localctx, 4, RULE_statement);
 		try {
 			setState(24);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case TEXT:
+			case FIELD:
 				_localctx = new TextContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(22);
-				match(TEXT);
+				setState(21);
+				match(FIELD);
 				}
 				break;
 			case BLANK:
 				_localctx = new BlankContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(23);
+				setState(22);
 				match(BLANK);
+				}
+				break;
+			case COLON:
+				_localctx = new ParameterContext(_localctx);
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(23);
+				jdbcParameter();
 				}
 				break;
 			default:
@@ -344,16 +327,88 @@ public class FrogSqlParser extends Parser {
 		return _localctx;
 	}
 
+	public static class JdbcParameterContext extends ParserRuleContext {
+		public TerminalNode COLON() { return getToken(FrogSqlParser.COLON, 0); }
+		public TerminalNode NUMBER() { return getToken(FrogSqlParser.NUMBER, 0); }
+		public List<TerminalNode> FIELD() { return getTokens(FrogSqlParser.FIELD); }
+		public TerminalNode FIELD(int i) {
+			return getToken(FrogSqlParser.FIELD, i);
+		}
+		public List<TerminalNode> DOT() { return getTokens(FrogSqlParser.DOT); }
+		public TerminalNode DOT(int i) {
+			return getToken(FrogSqlParser.DOT, i);
+		}
+		public JdbcParameterContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_jdbcParameter; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof FrogSqlVisitor ) return ((FrogSqlVisitor<? extends T>)visitor).visitJdbcParameter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final JdbcParameterContext jdbcParameter() throws RecognitionException {
+		JdbcParameterContext _localctx = new JdbcParameterContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_jdbcParameter);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(26);
+			match(COLON);
+			setState(27);
+			_la = _input.LA(1);
+			if ( !(_la==NUMBER || _la==FIELD) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			setState(32);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==DOT) {
+				{
+				{
+				setState(28);
+				match(DOT);
+				setState(29);
+				match(FIELD);
+				}
+				}
+				setState(34);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\r\35\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\3\6\3\17\n\3\r\3\16\3\20\3\4\3\4\3"+
-		"\4\3\4\5\4\27\n\4\3\5\3\5\5\5\33\n\5\3\5\2\2\6\2\4\6\b\2\2\2\35\2\n\3"+
-		"\2\2\2\4\16\3\2\2\2\6\26\3\2\2\2\b\32\3\2\2\2\n\13\5\6\4\2\13\f\5\4\3"+
-		"\2\f\3\3\2\2\2\r\17\5\b\5\2\16\r\3\2\2\2\17\20\3\2\2\2\20\16\3\2\2\2\20"+
-		"\21\3\2\2\2\21\5\3\2\2\2\22\27\7\3\2\2\23\27\7\4\2\2\24\27\7\5\2\2\25"+
-		"\27\7\6\2\2\26\22\3\2\2\2\26\23\3\2\2\2\26\24\3\2\2\2\26\25\3\2\2\2\27"+
-		"\7\3\2\2\2\30\33\7\r\2\2\31\33\7\f\2\2\32\30\3\2\2\2\32\31\3\2\2\2\33"+
-		"\t\3\2\2\2\5\20\26\32";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13&\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\3\2\3\2\7\2\r\n\2\f\2\16\2\20\13\2\3\3\3\3\3\3\3\3"+
+		"\5\3\26\n\3\3\4\3\4\3\4\5\4\33\n\4\3\5\3\5\3\5\3\5\7\5!\n\5\f\5\16\5$"+
+		"\13\5\3\5\2\2\6\2\4\6\b\2\3\3\2\t\n\2(\2\n\3\2\2\2\4\25\3\2\2\2\6\32\3"+
+		"\2\2\2\b\34\3\2\2\2\n\16\5\4\3\2\13\r\5\6\4\2\f\13\3\2\2\2\r\20\3\2\2"+
+		"\2\16\f\3\2\2\2\16\17\3\2\2\2\17\3\3\2\2\2\20\16\3\2\2\2\21\26\7\3\2\2"+
+		"\22\26\7\4\2\2\23\26\7\5\2\2\24\26\7\6\2\2\25\21\3\2\2\2\25\22\3\2\2\2"+
+		"\25\23\3\2\2\2\25\24\3\2\2\2\26\5\3\2\2\2\27\33\7\n\2\2\30\33\7\13\2\2"+
+		"\31\33\5\b\5\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31\3\2\2\2\33\7\3\2\2\2"+
+		"\34\35\7\b\2\2\35\"\t\2\2\2\36\37\7\7\2\2\37!\7\n\2\2 \36\3\2\2\2!$\3"+
+		"\2\2\2\" \3\2\2\2\"#\3\2\2\2#\t\3\2\2\2$\"\3\2\2\2\6\16\25\32\"";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

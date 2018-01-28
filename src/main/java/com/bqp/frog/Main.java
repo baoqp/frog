@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
 
-        String str = "select a from b ";
+        String str = "select a from b :1.abc";
         ANTLRInputStream input = new ANTLRInputStream(str);
         FrogSqlLexer lexer = new FrogSqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

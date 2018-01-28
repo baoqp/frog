@@ -17,12 +17,6 @@ public interface FrogSqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSql(FrogSqlParser.SqlContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link FrogSqlParser#block}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBlock(FrogSqlParser.BlockContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code insert}
 	 * labeled alternative in {@link FrogSqlParser#dml}.
 	 * @param ctx the parse tree
@@ -64,4 +58,17 @@ public interface FrogSqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBlank(FrogSqlParser.BlankContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code parameter}
+	 * labeled alternative in {@link FrogSqlParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter(FrogSqlParser.ParameterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FrogSqlParser#jdbcParameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJdbcParameter(FrogSqlParser.JdbcParameterContext ctx);
 }

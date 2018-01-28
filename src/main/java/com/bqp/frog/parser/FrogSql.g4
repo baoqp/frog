@@ -1,12 +1,9 @@
 grammar FrogSql;
 
 
-sql: dml block
+sql:dml statement*
 ;
 
-
-block: statement+
-;
 
 dml:
 INSERT                  # insert
@@ -16,20 +13,25 @@ INSERT                  # insert
 ;
 
 statement:
-//JDBC_PARAMETER          # jdbcParameter
-TEXT                     # text
-|BLANK                   # blank
+FIELD                   # text
+|BLANK                  # blank
+|jdbcParameter          # parameter
+
 ;
+
+jdbcParameter:
+COLON (NUMBER|FIELD) (DOT FIELD)*
+;
+
 
 
 INSERT:'insert';
 UPDATE:'update';
 DELETE:'delete';
 SELECT:'select';
-COLON:':';
-NUMBER:[1-9]([0-9]*);
 DOT:'.';
-FIELD:[a-zA-Z_]([a-zA-Z0-9_]*);
-JDBC_PARAMETER:COLON(NUMBER|FIELD)(DOT FIELD)*;
+COLON:':';
+NUMBER : [1-9]([0-9])*;
+FIELD:[a-zA-Z0-9_\\.]+;
 BLANK: (' ' | '\t' | '\r' | '\n')+;
-TEXT: [a-zA-Z0-9\\._]+;
+
