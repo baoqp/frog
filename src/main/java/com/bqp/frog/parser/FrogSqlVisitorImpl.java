@@ -5,35 +5,35 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
     @Override
     public String visitSql(FrogSqlParser.SqlContext ctx) {
-
-        return ctx.getText();
+        System.out.println(ctx.getText());
+        return super.visitSql(ctx);
     }
 
     @Override
     public String visitBlock(FrogSqlParser.BlockContext ctx) {
-
-         return ctx.getText();
+        System.out.println(ctx.getText());
+        return super.visitBlock(ctx);
     }
 
 
     @Override
     public String visitInsert(FrogSqlParser.InsertContext ctx) {
         System.out.println("--insert--");
-        return ctx.getText();
+        return super.visitInsert(ctx);
     }
 
 
     @Override
     public String visitUpdate(FrogSqlParser.UpdateContext ctx) {
         System.out.println("--update--");
-        return ctx.getText();
+        return super.visitUpdate(ctx);
     }
 
 
     @Override
     public String visitDelete(FrogSqlParser.DeleteContext ctx) {
         System.out.println("--delete--");
-        return ctx.getText();
+        return super.visitDelete(ctx);
     }
 
 
@@ -52,6 +52,7 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
     @Override
     public String visitText(FrogSqlParser.TextContext ctx) {
         System.out.println("--text--");
+        System.out.println(ctx.getText());
         return ctx.getText();
     }
 }

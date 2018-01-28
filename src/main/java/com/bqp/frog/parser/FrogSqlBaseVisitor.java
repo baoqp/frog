@@ -59,12 +59,12 @@ public class FrogSqlBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBlank(FrogSqlParser.BlankContext ctx) { return visitChildren(ctx); }
+	@Override public T visitText(FrogSqlParser.TextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitText(FrogSqlParser.TextContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlank(FrogSqlParser.BlankContext ctx) { return visitChildren(ctx); }
 }

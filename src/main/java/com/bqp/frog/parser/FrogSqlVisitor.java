@@ -51,17 +51,17 @@ public interface FrogSqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelect(FrogSqlParser.SelectContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code blank}
-	 * labeled alternative in {@link FrogSqlParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBlank(FrogSqlParser.BlankContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code text}
 	 * labeled alternative in {@link FrogSqlParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitText(FrogSqlParser.TextContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code blank}
+	 * labeled alternative in {@link FrogSqlParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlank(FrogSqlParser.BlankContext ctx);
 }

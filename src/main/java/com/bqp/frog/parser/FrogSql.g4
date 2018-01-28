@@ -5,7 +5,7 @@ sql: dml block
 ;
 
 
-block: (statement)*
+block: statement+
 ;
 
 dml:
@@ -16,9 +16,9 @@ INSERT                  # insert
 ;
 
 statement:
-//JDBC_PARAMETER          # jdbcParameter                   # blank
-BLANK                   # blank
-|TEXT                   # text
+//JDBC_PARAMETER          # jdbcParameter
+TEXT                     # text
+|BLANK                   # blank
 ;
 
 
@@ -32,4 +32,4 @@ DOT:'.';
 FIELD:[a-zA-Z_]([a-zA-Z0-9_]*);
 JDBC_PARAMETER:COLON(NUMBER|FIELD)(DOT FIELD)*;
 BLANK: (' ' | '\t' | '\r' | '\n')+;
-TEXT: [a-zA-Z0-9\\._];
+TEXT: [a-zA-Z0-9\\._]+;
