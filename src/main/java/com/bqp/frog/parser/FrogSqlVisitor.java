@@ -1,4 +1,4 @@
-// Generated from C:/code/frog/src/main/java/com/bqp/frog/parser\FrogSql.g4 by ANTLR 4.7
+// Generated from /home/bao/code/frog/src/main/java/com/bqp/frog/parser/FrogSql.g4 by ANTLR 4.7
 package com.bqp.frog.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 

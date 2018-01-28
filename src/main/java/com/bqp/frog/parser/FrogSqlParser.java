@@ -1,4 +1,4 @@
-// Generated from C:/code/frog/src/main/java/com/bqp/frog/parser\FrogSql.g4 by ANTLR 4.7
+// Generated from /home/bao/code/frog/src/main/java/com/bqp/frog/parser/FrogSql.g4 by ANTLR 4.7
 package com.bqp.frog.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -17,7 +17,8 @@ public class FrogSqlParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		INSERT=1, UPDATE=2, DELETE=3, SELECT=4, FIELD=5, BLANK=6, TEXT=7;
+		INSERT=1, UPDATE=2, DELETE=3, SELECT=4, COLON=5, NUMBER=6, DOT=7, FIELD=8, 
+		JDBC_PARAMETER=9, BLANK=10, TEXT=11;
 	public static final int
 		RULE_sql = 0, RULE_block = 1, RULE_dml = 2, RULE_statement = 3;
 	public static final String[] ruleNames = {
@@ -25,10 +26,11 @@ public class FrogSqlParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'insert'", "'update'", "'delete'", "'select'"
+		null, "'insert'", "'update'", "'delete'", "'select'", "':'", null, "'.'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "INSERT", "UPDATE", "DELETE", "SELECT", "FIELD", "BLANK", "TEXT"
+		null, "INSERT", "UPDATE", "DELETE", "SELECT", "COLON", "NUMBER", "DOT", 
+		"FIELD", "JDBC_PARAMETER", "BLANK", "TEXT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -145,20 +147,20 @@ public class FrogSqlParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12); 
+			setState(14);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			do {
+			while (_la==BLANK || _la==TEXT) {
 				{
 				{
 				setState(11);
 				statement();
 				}
 				}
-				setState(14); 
+				setState(16);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==BLANK || _la==TEXT );
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -224,14 +226,14 @@ public class FrogSqlParser extends Parser {
 		DmlContext _localctx = new DmlContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_dml);
 		try {
-			setState(20);
+			setState(21);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INSERT:
 				_localctx = new InsertContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(16);
+				setState(17);
 				match(INSERT);
 				}
 				break;
@@ -239,7 +241,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new UpdateContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(17);
+				setState(18);
 				match(UPDATE);
 				}
 				break;
@@ -247,7 +249,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new DeleteContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(18);
+				setState(19);
 				match(DELETE);
 				}
 				break;
@@ -255,7 +257,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new SelectContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(19);
+				setState(20);
 				match(SELECT);
 				}
 				break;
@@ -308,14 +310,14 @@ public class FrogSqlParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 6, RULE_statement);
 		try {
-			setState(24);
+			setState(25);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BLANK:
 				_localctx = new BlankContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(22);
+				setState(23);
 				match(BLANK);
 				}
 				break;
@@ -323,7 +325,7 @@ public class FrogSqlParser extends Parser {
 				_localctx = new TextContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(23);
+				setState(24);
 				match(TEXT);
 				}
 				break;
@@ -343,15 +345,15 @@ public class FrogSqlParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\t\35\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\3\6\3\17\n\3\r\3\16\3\20\3\4\3\4\3"+
-		"\4\3\4\5\4\27\n\4\3\5\3\5\5\5\33\n\5\3\5\2\2\6\2\4\6\b\2\2\2\35\2\n\3"+
-		"\2\2\2\4\16\3\2\2\2\6\26\3\2\2\2\b\32\3\2\2\2\n\13\5\6\4\2\13\f\5\4\3"+
-		"\2\f\3\3\2\2\2\r\17\5\b\5\2\16\r\3\2\2\2\17\20\3\2\2\2\20\16\3\2\2\2\20"+
-		"\21\3\2\2\2\21\5\3\2\2\2\22\27\7\3\2\2\23\27\7\4\2\2\24\27\7\5\2\2\25"+
-		"\27\7\6\2\2\26\22\3\2\2\2\26\23\3\2\2\2\26\24\3\2\2\2\26\25\3\2\2\2\27"+
-		"\7\3\2\2\2\30\33\7\b\2\2\31\33\7\t\2\2\32\30\3\2\2\2\32\31\3\2\2\2\33"+
-		"\t\3\2\2\2\5\20\26\32";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\r\36\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\3\7\3\17\n\3\f\3\16\3\22\13\3\3\4\3"+
+		"\4\3\4\3\4\5\4\30\n\4\3\5\3\5\5\5\34\n\5\3\5\2\2\6\2\4\6\b\2\2\2\36\2"+
+		"\n\3\2\2\2\4\20\3\2\2\2\6\27\3\2\2\2\b\33\3\2\2\2\n\13\5\6\4\2\13\f\5"+
+		"\4\3\2\f\3\3\2\2\2\r\17\5\b\5\2\16\r\3\2\2\2\17\22\3\2\2\2\20\16\3\2\2"+
+		"\2\20\21\3\2\2\2\21\5\3\2\2\2\22\20\3\2\2\2\23\30\7\3\2\2\24\30\7\4\2"+
+		"\2\25\30\7\5\2\2\26\30\7\6\2\2\27\23\3\2\2\2\27\24\3\2\2\2\27\25\3\2\2"+
+		"\2\27\26\3\2\2\2\30\7\3\2\2\2\31\34\7\f\2\2\32\34\7\r\2\2\33\31\3\2\2"+
+		"\2\33\32\3\2\2\2\34\t\3\2\2\2\5\20\27\33";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
