@@ -8,12 +8,11 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
 
-        String str = "select a from b :1.abc";
+        Long start = System.currentTimeMillis();
+        String str = "select a from #table where a1 = :1.abc and a2 in :2.ss ";
         ANTLRInputStream input = new ANTLRInputStream(str);
         FrogSqlLexer lexer = new FrogSqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -21,5 +20,8 @@ public class Main {
         ParseTree tree = parser.sql(); // parse
         FrogSqlVisitor visitor = new FrogSqlVisitorImpl();
         visitor.visit(tree);
+        long end = System.currentTimeMillis();
+        System.out.println("--time cost--" + (end - start));
+
     }
 }

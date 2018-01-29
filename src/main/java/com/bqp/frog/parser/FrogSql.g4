@@ -6,32 +6,58 @@ sql:dml statement*
 
 
 dml:
-INSERT                  # insert
-|UPDATE                 # update
-|DELETE                 # delete
-|SELECT                 # select
+INSERT                      # insert
+    |UPDATE                 # update
+|DELETE                     # delete
+|SELECT                     # select
 ;
 
 statement:
-FIELD                   # text
-|BLANK                  # blank
-|jdbcParameter          # parameter
-
+GLOBAL_TABLE                # globalTable
+|BLANK                      # blank
+|PARAMETER                  # parameter
+|ITERABLE_PARAMETER         # iterableParameter
+|plainText                  # text
+|logicalOp                  # logical
 ;
 
-jdbcParameter:
-COLON (NUMBER|FIELD) (DOT FIELD)*
+
+
+plainText:
+(FIELD|PLAINTEXT)
 ;
-
-
+logicalOp:
+LOGICAL_AND
+|LOGICAL_OR
+|LOGICAL_LT
+|LOGICAL_LE
+|LOGICAL_GT
+|LOGICAL_GE
+|LOGICAL_EQ
+|LOGICAL_NE
+|LOGICAL_NOT
+;
 
 INSERT:'insert';
 UPDATE:'update';
 DELETE:'delete';
 SELECT:'select';
+GLOBAL_TABLE:'#table';
 DOT:'.';
 COLON:':';
-NUMBER : [1-9]([0-9])*;
-FIELD:[a-zA-Z0-9_\\.]+;
-BLANK: (' ' | '\t' | '\r' | '\n')+;
-
+LOGICAL_AND:'and';
+LOGICAL_OR:'or';
+LOGICAL_LT: '<';
+LOGICAL_LE: '<=';
+LOGICAL_GT: '>';
+LOGICAL_GE: '>=';
+LOGICAL_EQ: '=';
+LOGICAL_NE: '!=' | '<>';
+LOGICAL_NOT: 'not';
+BLANK: (' ' | '\t' )+;
+NUMBER :[1-9]([0-9])*;
+FIELD:[a-zA-Z_] ([a-zA-Z0-9_])*;
+PLAINTEXT:[a-zA-Z0-9_\\.]+;
+PARAMETER:COLON (NUMBER|FIELD) (DOT FIELD)*;
+ITERABLE_PARAMETER: 'in' BLANK PARAMETER;
+WS: ('\r' | '\n')+ -> skip;

@@ -45,12 +45,12 @@ public interface FrogSqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelect(FrogSqlParser.SelectContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code globalTable}
+	 * Visit a parse tree produced by the {@code text}
 	 * labeled alternative in {@link FrogSqlParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlobalTable(FrogSqlParser.GlobalTableContext ctx);
+	T visitText(FrogSqlParser.TextContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code blank}
 	 * labeled alternative in {@link FrogSqlParser#statement}.
@@ -66,36 +66,9 @@ public interface FrogSqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParameter(FrogSqlParser.ParameterContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code iterableParameter}
-	 * labeled alternative in {@link FrogSqlParser#statement}.
+	 * Visit a parse tree produced by {@link FrogSqlParser#jdbcParameter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIterableParameter(FrogSqlParser.IterableParameterContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code text}
-	 * labeled alternative in {@link FrogSqlParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitText(FrogSqlParser.TextContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code logical}
-	 * labeled alternative in {@link FrogSqlParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLogical(FrogSqlParser.LogicalContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link FrogSqlParser#plainText}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPlainText(FrogSqlParser.PlainTextContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link FrogSqlParser#logicalOp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLogicalOp(FrogSqlParser.LogicalOpContext ctx);
+	T visitJdbcParameter(FrogSqlParser.JdbcParameterContext ctx);
 }

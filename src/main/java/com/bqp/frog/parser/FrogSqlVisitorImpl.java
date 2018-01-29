@@ -3,7 +3,6 @@ package com.bqp.frog.parser;
 public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
 
-
     @Override
     public String visitInsert(FrogSqlParser.InsertContext ctx) {
         System.out.println("--insert--");
@@ -17,12 +16,26 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
         return super.visitUpdate(ctx);
     }
 
-    @Override public String visitParameter(FrogSqlParser.ParameterContext ctx) {
+    @Override
+    public String visitParameter(FrogSqlParser.ParameterContext ctx) {
         System.out.println("--parameter--");
         System.out.println(ctx.getText());
         return visitChildren(ctx);
     }
 
+    @Override
+    public String visitIterableParameter(FrogSqlParser.IterableParameterContext ctx) {
+        System.out.println("-- Iterable parameter--");
+        System.out.println(ctx.getText());
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public String visitLogical(FrogSqlParser.LogicalContext ctx) {
+        System.out.println("-- logical --");
+        System.out.println(ctx.getText());
+        return visitChildren(ctx);
+    }
 
     @Override
     public String visitDelete(FrogSqlParser.DeleteContext ctx) {
@@ -30,12 +43,12 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
         return super.visitDelete(ctx);
     }
 
+    @Override
+    public String visitGlobalTable(FrogSqlParser.GlobalTableContext ctx) {
+        System.out.println("--global table--");
+        return visitChildren(ctx);
+    }
 
-    /*@Override
-    public String visitJdbcParameter(FrogSqlParser.JdbcParameterContext ctx) {
-        System.out.println("--delete--");
-        return ctx.getText();
-    }*/
 
     @Override
     public String visitBlank(FrogSqlParser.BlankContext ctx) {

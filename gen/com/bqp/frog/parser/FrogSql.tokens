@@ -1,0 +1,15 @@
+INSERT=1
+UPDATE=2
+DELETE=3
+SELECT=4
+DOT=5
+COLON=6
+NUMBER=7
+FIELD=8
+BLANK=9
+'insert'=1
+'update'=2
+'delete'=3
+'select'=4
+'.'=5
+':'=6
