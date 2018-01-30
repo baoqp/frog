@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
 
         Long start = System.currentTimeMillis();
-        String str = "select a from #table where a1 = :1.abc and a2 in :2.ss ";
+        String str = "select * from #table where a1 = :1.abc and a2 in :2.ss and a3 = 'test'  ";
         ANTLRInputStream input = new ANTLRInputStream(str);
         FrogSqlLexer lexer = new FrogSqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

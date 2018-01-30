@@ -1,46 +1,66 @@
 package com.bqp.frog.parser;
 
+import com.bqp.frog.descriptor.MethodDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
+    MethodDescriptor methodDescriptor;
+
+    Object[] params;
+
+
+    List<Integer> parameterIndices = new ArrayList<>();
+
+    public FrogSqlVisitorImpl() {
+
+    }
+
+    StringBuilder sb = null;
+
+    @Override
+    public String visitSql(FrogSqlParser.SqlContext ctx) {
+        sb = new StringBuilder();
+        return super.visitSql(ctx);
+    }
 
     @Override
     public String visitInsert(FrogSqlParser.InsertContext ctx) {
-        System.out.println("--insert--");
+        sb.append(ctx.getText());
         return super.visitInsert(ctx);
     }
 
 
     @Override
     public String visitUpdate(FrogSqlParser.UpdateContext ctx) {
-        System.out.println("--update--");
+        sb.append(ctx.getText());
         return super.visitUpdate(ctx);
     }
 
     @Override
+    public String visitDelete(FrogSqlParser.DeleteContext ctx) {
+        sb.append(ctx.getText());
+        return super.visitDelete(ctx);
+    }
+
+    @Override
     public String visitParameter(FrogSqlParser.ParameterContext ctx) {
-        System.out.println("--parameter--");
-        System.out.println(ctx.getText());
+        sb.append("?");
         return visitChildren(ctx);
     }
 
     @Override
     public String visitIterableParameter(FrogSqlParser.IterableParameterContext ctx) {
-        System.out.println("-- Iterable parameter--");
-        System.out.println(ctx.getText());
+        sb.append("?");
         return visitChildren(ctx);
     }
 
     @Override
     public String visitLogical(FrogSqlParser.LogicalContext ctx) {
-        System.out.println("-- logical --");
-        System.out.println(ctx.getText());
+        sb.append(ctx.getText());
         return visitChildren(ctx);
-    }
-
-    @Override
-    public String visitDelete(FrogSqlParser.DeleteContext ctx) {
-        System.out.println("--delete--");
-        return super.visitDelete(ctx);
     }
 
     @Override
@@ -48,7 +68,6 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
         System.out.println("--global table--");
         return visitChildren(ctx);
     }
-
 
     @Override
     public String visitBlank(FrogSqlParser.BlankContext ctx) {
