@@ -37,7 +37,7 @@ public class OperatorImpl implements Operator {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         FrogSqlParser parser = new FrogSqlParser(tokens);
         ParseTree tree = parser.sql(); // parse
-        frogSqlVisitor = new FrogSqlVisitorImpl(methodDescriptor);
+        frogSqlVisitor = new FrogSqlVisitorImpl();
     }
 
     /* TODO where子句中in这种类型，使用下面这种方式，否则需要拿到实际的参数，才能确定要用几个 ?
