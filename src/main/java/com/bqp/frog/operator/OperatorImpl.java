@@ -10,6 +10,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Bao Qingping
  */
@@ -21,13 +24,18 @@ public class OperatorImpl implements Operator {
 
     private FrogSqlVisitor frogSqlVisitor;
 
+    private List<BindingParameter> bindingParameters;
+
+    private ParameterContext parameterContext;
+
+    // TODO 写成单例???
     public OperatorImpl(Class<?> daoClass, MethodDescriptor methodDescriptor) {
         this.daoClass = daoClass;
         this.methodDescriptor = methodDescriptor;
-        init();
-    }
+        this.bindingParameters = new ArrayList<>();
+        this.parameterContext = DefaultParameterContext.create(this.methodDescriptor.getParameterDescriptors());
 
-    public void init() {
+
         SQL sqlAnnotation = methodDescriptor.getAnnotation(SQL.class);
         // TODO sqlAnnotation not null
         String rawSql = sqlAnnotation.value();
@@ -37,8 +45,10 @@ public class OperatorImpl implements Operator {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         FrogSqlParser parser = new FrogSqlParser(tokens);
         ParseTree tree = parser.sql(); // parse
-        frogSqlVisitor = new FrogSqlVisitorImpl();
+        frogSqlVisitor = new FrogSqlVisitorImpl(bindingParameters);
     }
+
+
 
     /* TODO where子句中in这种类型，使用下面这种方式，否则需要拿到实际的参数，才能确定要用几个 ?
     PreparedStatement pstmt = connection.prepareStatement(
@@ -49,7 +59,7 @@ public class OperatorImpl implements Operator {
      */
     @Override
     public Object execute(Object[] params) {
-
+        //构建invocationContext, render sql, 调用jdbc
         return null;
     }
 

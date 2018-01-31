@@ -54,10 +54,10 @@ LOGICAL_GE: '>=';
 LOGICAL_EQ: '=';
 LOGICAL_NE: '!=' | '<>';
 LOGICAL_NOT: 'not';
-BLANK: (' ' | '\t' )+;
+BLANK: (' ')+;
 NUMBER :[1-9]([0-9])*;
 FIELD:[a-zA-Z_] ([a-zA-Z0-9_])*;
 PLAINTEXT:[a-zA-Z0-9_\\.\\*\\(\\)\\']+;   // 如果使用排除不可以出现的字符的正则表达式会有问题
 PARAMETER:COLON (NUMBER|FIELD) (DOT FIELD)*;
 ITERABLE_PARAMETER: 'in' BLANK PARAMETER;
-WS: ('\r' | '\n')+ -> skip;
+WS: ('\r' | '\t' |'\n')+ -> skip;
