@@ -1,6 +1,7 @@
 package com.bqp.frog.util;
 
 /**
+ * 工具类，表示元组
  * @author Bao Qingping
  */
 public class Tuple<K, T> {

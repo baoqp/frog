@@ -1,4 +1,4 @@
-package com.bqp.frog.bean;
+package com.bqp.frog.util.bean;
 
 import com.bqp.frog.util.Objects;
 

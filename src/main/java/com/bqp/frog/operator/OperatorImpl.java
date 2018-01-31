@@ -41,7 +41,6 @@ public class OperatorImpl implements Operator {
     }
 
     /* TODO where子句中in这种类型，使用下面这种方式，否则需要拿到实际的参数，才能确定要用几个 ?
-
     PreparedStatement pstmt = connection.prepareStatement(
     "DELETE FROM employee WHERE ename = ANY (?)");
     String[] idList = new String[] {"abc", "bcd", "efg"};
