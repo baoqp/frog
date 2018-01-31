@@ -5,6 +5,7 @@ import com.bqp.frog.util.Objects;
 import com.bqp.frog.util.Strings;
 
 /**
+ * sql中对参数的引用
  * @author ash
  */
 public class BindingParameter {

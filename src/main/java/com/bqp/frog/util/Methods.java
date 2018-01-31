@@ -4,6 +4,7 @@ import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.descriptor.ParameterDescriptor;
 import com.bqp.frog.descriptor.ReturnDescriptor;
 import com.bqp.frog.util.reflect.ParamNameResolver;
+import com.bqp.frog.util.reflect.Reflection;
 import com.google.common.reflect.TypeToken;
 import sun.net.www.content.text.Generic;
 
@@ -16,24 +17,6 @@ import java.util.*;
  * @author Bao Qingping
  */
 public class Methods {
-
-    // 递归获取所有的注解
-    public static Set<Annotation> getAnnotations(Class<?> clazz) {
-        Set<Annotation> annos = new HashSet<Annotation>();
-        getAnnotations(clazz, annos);
-        return annos;
-    }
-
-    static void getAnnotations(Class<?> clazz, Set<Annotation> annos) {
-        if (clazz == null) {
-            return;
-        }
-        annos.addAll(Arrays.asList(clazz.getDeclaredAnnotations()));
-        for (Class<?> parent : clazz.getInterfaces()) {
-            getAnnotations(parent, annos);
-        }
-        getAnnotations(clazz.getSuperclass(), annos);
-    }
 
     private static final TypeToken<?> genericTypeToken = TypeToken.of(Generic.class);
 
@@ -67,7 +50,7 @@ public class Methods {
             mas.add(a);
         }
 
-        for (Annotation a : getAnnotations(daoClass)) {
+        for (Annotation a : Reflection.getAnnotations(daoClass)) {
             mas.add(a);
         }
 

@@ -12,6 +12,10 @@ import java.util.regex.Pattern;
 
 public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
+    private Pattern parameterPattern = Pattern.compile(":(\\w+)((\\.\\w+)*)");
+
+    private Pattern numberPattern = Pattern.compile("[1-9]([0-9])*"); // 数字
+
     MethodDescriptor methodDescriptor;
 
     Object[] params;
@@ -57,22 +61,31 @@ public class FrogSqlVisitorImpl extends FrogSqlBaseVisitor<String> {
 
     @Override
     public String visitParameter(FrogSqlParser.ParameterContext ctx) {
-        String parameter = ctx.getText();
-        Pattern p = Pattern.compile(":(\\w+)((\\.\\w+)*)"); // 先不用jdbcType
-        Matcher m = p.matcher(parameter);
+
+        sb.append("?");
+        return visitChildren(ctx);
+    }
+
+    private BindingParameter getBindingParameter(FrogSqlParser.StatementContext context) {
+        String parameter = context.getText();
+
+        Matcher m = parameterPattern.matcher(parameter);
+
         if (!m.matches()) {
-            throw new IllegalStateException("Can't compile string '" + str + "'");
+            throw new IllegalStateException("Can't compile string '" + parameter + "'");
         }
+
         String group1 = m.group(1);
         String group2 = m.group(2);
 
         String parameterName = group1;
+
         String propertyPath = Strings.isNotEmpty(group2) ? group2.substring(1) : "";
         JdbcType jdbcType = null;
         BindingParameter bindingParameter = BindingParameter.create(parameterName, propertyPath, jdbcType);
 
-        sb.append("?");
-        return visitChildren(ctx);
+        return bindingParameter;
+
     }
 
     @Override

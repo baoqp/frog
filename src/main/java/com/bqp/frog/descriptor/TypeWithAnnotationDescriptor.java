@@ -20,8 +20,6 @@ public abstract class TypeWithAnnotationDescriptor {
         this.type = type;
         this.rawType = TypeToken.of(type).getRawType();
         this.annotations = annotations;
-
-
         typeWrapper = new TypeWrapper(type);
     }
 
