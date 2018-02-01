@@ -21,7 +21,12 @@ public class ParamNameResolver {
         }
     }
 
+    // TODO 在java8中用过附加编译参数"-parameter"，可以在运行时获取参数名称
+    // 兼容其他版本java,可以参考spring的parameterNameDiscoverer
+    // http://grepcode.com/search/?query=LocalVariableTableParameterNameDiscoverer
     public static String getActualParamName(Method method, int paramIndex) {
+        return method.getParameters()[paramIndex].getName();
+        /*
         if (GET_PARAMS == null) {
             return null;
         }
@@ -31,6 +36,7 @@ public class ParamNameResolver {
         } catch (Exception e) {
             throw new IllegalStateException("Error occurred when invoking Method#getParameters().", e);
         }
+        */
     }
 
 }

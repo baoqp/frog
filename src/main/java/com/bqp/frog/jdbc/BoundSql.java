@@ -86,4 +86,11 @@ public class BoundSql {
         return new BoundSql(getSql(), args, typeHandlers);
     }
 
+    @Override
+    public String toString() {
+        return "BoundSql{" +
+                "sql='" + sql + '\'' +
+                ", args=" + args +
+                '}';
+    }
 }

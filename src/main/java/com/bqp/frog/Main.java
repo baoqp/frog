@@ -1,28 +1,69 @@
 package com.bqp.frog;
 
-import com.bqp.frog.parser.FrogSqlLexer;
-import com.bqp.frog.parser.FrogSqlParser;
-import com.bqp.frog.parser.FrogSqlVisitor;
-import com.bqp.frog.parser.FrogSqlVisitorImpl;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import com.bqp.frog.annotation.DB;
+import com.bqp.frog.annotation.SQL;
+import com.bqp.frog.descriptor.MethodDescriptor;
+import com.bqp.frog.operator.Operator;
+import com.bqp.frog.operator.OperatorImpl;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.bqp.frog.util.Methods.getMethodDescriptor;
 
 public class Main {
-    public static void main(String[] args) {
 
-        Long start = System.currentTimeMillis();
-        String str = "select * from a where a1 = :1.abc and a2 in :2.ss and a3 = 'test'  ";
-        ANTLRInputStream input = new ANTLRInputStream(str);
-        FrogSqlLexer lexer = new FrogSqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        FrogSqlParser parser = new FrogSqlParser(tokens);
-        ParseTree tree = parser.sql(); // parse
-        FrogSqlVisitorImpl visitor = new FrogSqlVisitorImpl();
-        visitor.visit(tree);
-        long end = System.currentTimeMillis();
-        System.out.println("--sql-- " + visitor.getSql());
-        System.out.println("--time cost--" + (end - start));
+    public static class User {
+        private String address;
 
+
+        private String name;
+
+        private int age;
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+    }
+
+    @DB
+    public static interface UserDao {
+        @SQL("select * from user where address in :addressList and age = :age ")
+        List<User> getUser(int age, List<String> addressList);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Class userDao = UserDao.class;
+        Method method = userDao.getDeclaredMethod("getUser", int.class, List.class);
+
+        MethodDescriptor methodDescriptor = getMethodDescriptor(userDao, method, true);
+        Operator operator = new OperatorImpl(userDao, methodDescriptor);
+
+        List<String> addressList = new ArrayList<>();
+        addressList.add("ab");
+        addressList.add("bc");
+        Object[] arguments = {18, addressList};
+        operator.execute(arguments);
     }
 }

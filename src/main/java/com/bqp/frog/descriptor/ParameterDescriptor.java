@@ -6,6 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 
+// 方法中的形参
 public class ParameterDescriptor extends TypeWithAnnotationDescriptor {
 
     /**

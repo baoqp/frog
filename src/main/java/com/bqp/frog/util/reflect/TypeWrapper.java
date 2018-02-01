@@ -7,6 +7,10 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
+ * 之所以要用TypeWrapper是因为，在使用PreparedStatement和TypeHandler设置statement的参数值，需要
+ * 需要知道参数类型。对于List,Set等ParameterizedType在jdbc中通常是Collection及其子类，需要知道每个
+ * 其中元素的类型；对于普通的class，type就是class，其中对于如果class是数组，也需要拿到数组元素的类型。
+ *
  * @author ash
  */
 public class TypeWrapper {

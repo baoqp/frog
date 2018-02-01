@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
+ *
  * @author ash
  */
 public class DefaultParameterContext implements ParameterContext {
@@ -58,7 +59,7 @@ public class DefaultParameterContext implements ParameterContext {
         String parameterName = bindingParameter.getParameterName();
         Type type = nameToTypeMap.get(parameterName);
         if (type == null) {
-            throw new BindingException("Parameter '" + BindingParameter.create(bindingParameter.getParameterName(), "", null) +
+            throw new BindingException("Parameter '" + bindingParameter.getParameterName() +
                     "' not found, available root parameters are " + transToBindingParameters(nameToTypeMap.keySet()));
         }
         return new BindingParameterInvokerImpl(type, bindingParameter);
