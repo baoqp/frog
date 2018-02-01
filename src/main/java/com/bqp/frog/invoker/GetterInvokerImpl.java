@@ -29,10 +29,12 @@ public class GetterInvokerImpl extends MethodNamedObject implements GetterInvoke
         TypeToken<?> returnToken = TypeToken.of(method.getGenericReturnType());
 
         if (getterAnno != null) {
-            // 需要确保getter上注解的function返回值类型是参数的子类型，否则报错
+            // 需要确保Getter注解的getter方法返回的类型是Getter注解中GetterFunction输入参数的子类型，否则报错
+
             Class<? extends GetterFunction<?, ?>> funcClass = getterAnno.value();
             function = Reflection.instantiateClass(funcClass);
 
+            // 获取funcClass的两个泛型
             Tuple<TypeToken, TypeToken> tokenTuple = TypeTokens.resolveFatherClassTuple(TypeToken.of(funcClass), GetterFunction.class);
             TypeToken<?> inputToken = tokenTuple.getFirst();
             TypeToken<?> outputToken = tokenTuple.getSecond();
@@ -44,6 +46,7 @@ public class GetterInvokerImpl extends MethodNamedObject implements GetterInvoke
                         "on method[" + method + "] error, function's inputType[" + inputToken.getType() + "] " +
                         "must be assignable from method's returnType[" + returnToken.getType() + "]");
             }
+
             returnToken = outputToken;
         }
         returnType = returnToken.getType();

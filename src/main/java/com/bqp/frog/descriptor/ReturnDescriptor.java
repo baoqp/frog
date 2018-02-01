@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 方法返回描述
- *
+ * ReturnDescriptor中的注解是方法和class上的注解
  * @author ash
  */
 public class ReturnDescriptor extends TypeWithAnnotationDescriptor {

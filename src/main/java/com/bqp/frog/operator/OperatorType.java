@@ -9,4 +9,5 @@ public enum OperatorType {
 
     UPDATE,
 
+    OTHERS;
 }

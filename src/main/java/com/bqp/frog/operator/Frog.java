@@ -1,10 +1,20 @@
 package com.bqp.frog.operator;
 
+import com.bqp.frog.annotation.SQL;
 import com.bqp.frog.descriptor.MethodDescriptor;
+import com.bqp.frog.parser.FrogSqlLexer;
+import com.bqp.frog.parser.FrogSqlParameterVisitor;
+import com.bqp.frog.parser.FrogSqlParser;
+import com.bqp.frog.parser.OperatorTypeVisitor;
 import com.bqp.frog.util.reflect.AbstractInvocationHandler;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.bqp.frog.util.Methods.getMethodDescriptor;
 
@@ -23,7 +33,7 @@ public class Frog {
 
         @Override
         protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-            Operator operator = getOperator(method);
+            Operator operator = getOperator(daoClass, method);
             try {
                 Object r = operator.execute(args);
                 return r;
@@ -32,12 +42,27 @@ public class Frog {
             }
             return null;
         }
+    }
 
 
-        private Operator getOperator(Method method) {
-            MethodDescriptor methodDescriptor = getMethodDescriptor(daoClass, method, true);
-            Operator operator = new OperatorImpl(daoClass, methodDescriptor);
-            return operator;
-        }
+    public static Operator getOperator(Class<?> daoClass, Method method) {
+
+        MethodDescriptor methodDescriptor = getMethodDescriptor(daoClass, method, true);
+        List<BindingParameter> bindingParameters = new ArrayList<>();
+
+        SQL sqlAnnotation = methodDescriptor.getAnnotation(SQL.class);
+        String rawSql = sqlAnnotation.value(); // TODO assert SQL Anno not null
+        ANTLRInputStream input = new ANTLRInputStream(rawSql);
+        FrogSqlLexer lexer = new FrogSqlLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        FrogSqlParser parser = new FrogSqlParser(tokens);
+        ParseTree tree = parser.sql(); // parse
+        OperatorTypeVisitor frogSqlVisitor = new FrogSqlParameterVisitor(bindingParameters);
+        frogSqlVisitor.visit(tree);
+        OperatorType operatorType = frogSqlVisitor.getOperatorType();
+
+        // TODO 根据不同的operatorType进行实例化
+        Operator operator = new QueryOperator(daoClass, methodDescriptor, bindingParameters, tree);
+        return operator;
     }
 }

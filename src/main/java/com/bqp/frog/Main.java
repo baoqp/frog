@@ -2,15 +2,14 @@ package com.bqp.frog;
 
 import com.bqp.frog.annotation.DB;
 import com.bqp.frog.annotation.SQL;
-import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.operator.Operator;
-import com.bqp.frog.operator.OperatorImpl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bqp.frog.util.Methods.getMethodDescriptor;
+import static com.bqp.frog.operator.Frog.getOperator;
+
 
 public class Main {
 
@@ -54,16 +53,19 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+
         Class userDao = UserDao.class;
+
         Method method = userDao.getDeclaredMethod("getUser", int.class, List.class);
 
-        MethodDescriptor methodDescriptor = getMethodDescriptor(userDao, method, true);
-        Operator operator = new OperatorImpl(userDao, methodDescriptor);
+        Operator operator = getOperator(userDao, method);
 
         List<String> addressList = new ArrayList<>();
         addressList.add("ab");
         addressList.add("bc");
         Object[] arguments = {18, addressList};
+
         operator.execute(arguments);
+
     }
 }
