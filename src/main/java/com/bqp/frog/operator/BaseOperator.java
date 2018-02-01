@@ -1,6 +1,7 @@
 package com.bqp.frog.operator;
 
 import com.bqp.frog.descriptor.MethodDescriptor;
+import com.bqp.frog.jdbc.JdbcOperations;
 import com.bqp.frog.jdbc.type.TypeHandler;
 import com.bqp.frog.jdbc.type.TypeHandlerRegistry;
 import com.bqp.frog.parser.FrogSqlVisitor;
@@ -9,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public abstract class BaseOperator implements Operator {
 
     ParameterContext parameterContext;
 
+    DataSource dataSource;
+
+    JdbcOperations jdbcOperations;
 
     public BaseOperator(Class<?> daoClass,
                         MethodDescriptor methodDescriptor,
@@ -62,4 +67,21 @@ public abstract class BaseOperator implements Operator {
 
     }
 
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+
+    public JdbcOperations getJdbcOperations() {
+        return jdbcOperations;
+    }
+
+    public void setJdbcOperations(JdbcOperations jdbcOperations) {
+        this.jdbcOperations = jdbcOperations;
+    }
 }

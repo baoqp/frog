@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static com.bqp.frog.util.Arrays.*;
+
 /**
  * @author Bao Qingping
  */
@@ -66,7 +68,7 @@ public class Methods {
             Type type = resolveType(genericParameterTypes[i], daoTypeToken);
             Annotation[] pas = parameterAnnotations[i];
             String name = names[i];
-            pds.add(ParameterDescriptor.create(i, type, Arrays.asList(pas), name));
+            pds.add(ParameterDescriptor.create(i, type, java.util.Arrays.asList(pas), name));
         }
 
         return MethodDescriptor.create(method.getName(), daoClass, rd, pds);

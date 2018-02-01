@@ -6,17 +6,17 @@ import com.bqp.frog.annotation.Result;
 import com.bqp.frog.annotation.Results;
 import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.descriptor.ReturnDescriptor;
-import com.bqp.frog.jdbc.BeanPropertyRowMapper;
-import com.bqp.frog.jdbc.BoundSql;
-import com.bqp.frog.jdbc.RowMapper;
-import com.bqp.frog.jdbc.SingleColumnRowMapper;
+import com.bqp.frog.jdbc.*;
 import com.bqp.frog.jdbc.type.TypeHandlerRegistry;
 import com.bqp.frog.parser.FrogSqlRender;
+import com.bqp.frog.util.ListSupplier;
+import com.bqp.frog.util.SetSupplier;
 import com.bqp.frog.util.bean.BeanUtil;
 import com.bqp.frog.util.bean.PropertyMeta;
 import com.bqp.frog.util.reflect.Reflection;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +32,25 @@ public class QueryOperator extends BaseOperator {
 
     ReturnDescriptor returnDescriptor;
 
+    ListSupplier listSupplier;
+    SetSupplier setSupplier;
+
     public QueryOperator(Class<?> daoClass,
                          MethodDescriptor methodDescriptor,
                          List<BindingParameter> bindingParameters,
                          ParseTree tree) {
 
         super(daoClass, methodDescriptor, bindingParameters, tree);
+
+        if (returnDescriptor.isCollection()
+                || returnDescriptor.isList()
+                || returnDescriptor.isLinkedList()) {
+            listSupplier = new LinkedListSuppliter();
+        } else if (returnDescriptor.isArrayList()) {
+            listSupplier = new ArrayListSupplier();
+        } else if (returnDescriptor.isSetAssignable()) {
+            setSupplier = new HashSetSupplier();
+        }
 
         init(methodDescriptor);
     }
@@ -58,8 +71,74 @@ public class QueryOperator extends BaseOperator {
         System.out.println("bound sql generate by frog: " + boundSql.toString());
 
 
-
         return null;
+    }
+
+    private Object executeFromDb(final DataSource ds, final BoundSql boundSql) {
+        Object r;
+        boolean success = false;
+        long now = System.nanoTime();
+        try {
+
+            //
+            r = new QueryVisitor() {
+
+                @Override
+                Object visitForList() {
+                    return jdbcOperations.queryForList(ds, boundSql, listSupplier, rowMapper);
+                }
+
+                @Override
+                Object visitForSet() {
+                    return jdbcOperations.queryForSet(ds, boundSql, setSupplier, rowMapper);
+                }
+
+                @Override
+                Object visitForArray() {
+                    return jdbcOperations.queryForArray(ds, boundSql, rowMapper);
+
+                }
+
+                @Override
+                Object visitForObject() {
+                    return jdbcOperations.queryForObject(ds, boundSql, rowMapper);
+                }
+            }.visit();
+
+            success = true;
+        } finally {
+            long cost = System.nanoTime() - now;
+            System.out.println("--quety cost -- " + cost);
+        }
+        return r;
+    }
+
+
+    abstract class QueryVisitor {
+
+        public Object visit() {
+            Object r;
+            if (returnDescriptor.isCollection()
+                    || returnDescriptor.isListAssignable()) {
+                r = visitForList();
+            } else if (returnDescriptor.isSetAssignable()) {
+                r = visitForSet();
+            } else if (returnDescriptor.isArray()) {
+                r = visitForArray();
+            } else {
+                r = visitForObject();
+            }
+            return r;
+        }
+
+        abstract Object visitForList();
+
+        abstract Object visitForSet();
+
+        abstract Object visitForArray();
+
+        abstract Object visitForObject();
+
     }
 
 
