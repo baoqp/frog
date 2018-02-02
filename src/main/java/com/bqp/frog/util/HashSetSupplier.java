@@ -1,6 +1,4 @@
-package com.bqp.frog.jdbc;
-
-import com.bqp.frog.util.SetSupplier;
+package com.bqp.frog.util;
 
 import java.util.HashSet;
 import java.util.Set;

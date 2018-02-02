@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class Main {
         HikariDataSource ds = new HikariDataSource(config);
 
         Class userDao = UserDao.class;
+Connection conn = ds.getConnection();
 
 
        /* Method method = userDao.getDeclaredMethod("getUsers", int.class);
