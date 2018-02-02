@@ -1,5 +1,7 @@
 package com.bqp.frog.operator;
 
+import com.bqp.frog.datasource.DataSourceGroup;
+import com.bqp.frog.datasource.MasterSlaveDataSourceWrapper;
 import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.jdbc.JdbcOperations;
 import com.bqp.frog.jdbc.type.TypeHandler;
@@ -27,8 +29,6 @@ public abstract class BaseOperator implements Operator {
 
     Class<?> daoClass;
 
-    FrogSqlVisitor frogSqlVisitor;
-
     ParseTree tree;
 
     List<BindingParameter> bindingParameters;
@@ -37,6 +37,10 @@ public abstract class BaseOperator implements Operator {
     List<TypeHandler<?>> typeHandlers;
 
     ParameterContext parameterContext;
+
+    DataSourceGroup dataSourceGroup;
+
+    MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper;
 
     DataSource dataSource;
 
@@ -67,6 +71,21 @@ public abstract class BaseOperator implements Operator {
 
     }
 
+    public DataSourceGroup getDataSourceGroup() {
+        return dataSourceGroup;
+    }
+
+    public void setDataSourceGroup(DataSourceGroup dataSourceGroup) {
+        this.dataSourceGroup = dataSourceGroup;
+    }
+
+    public MasterSlaveDataSourceWrapper getMasterSlaveDataSourceWrapper() {
+        return masterSlaveDataSourceWrapper;
+    }
+
+    public void setMasterSlaveDataSourceWrapper(MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper) {
+        this.masterSlaveDataSourceWrapper = masterSlaveDataSourceWrapper;
+    }
 
     public DataSource getDataSource() {
         return dataSource;

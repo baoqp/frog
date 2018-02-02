@@ -58,12 +58,7 @@ public class OperatorFactory {
         } else {
             operator = new UpdateOperator(daoClass, methodDescriptor, bindingParameters, tree, operatorType);
         }
-
-
-
-
-
-
+        
 
         // 构造表生成器
         /*boolean isSqlUseGlobalTable = !rootNode.getASTGlobalTables().isEmpty();

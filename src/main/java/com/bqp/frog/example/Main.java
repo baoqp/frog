@@ -28,9 +28,6 @@ public class Main {
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         HikariDataSource ds = new HikariDataSource(config);
 
-        Class userDao = UserDao.class;
-Connection conn = ds.getConnection();
-
 
        /* Method method = userDao.getDeclaredMethod("getUsers", int.class);
         BaseOperator operator = getOperator(userDao, method);
