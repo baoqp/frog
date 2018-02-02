@@ -17,7 +17,6 @@ import java.util.Set;
  */
 public class JdbcTemplate implements JdbcOperations {
 
-
     @Override
     public <T> T queryForObject(DataSource dataSource, BoundSql boundSql, RowMapper<T> rowMapper)
             throws DataAccessException {

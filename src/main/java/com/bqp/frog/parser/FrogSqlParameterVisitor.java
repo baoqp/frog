@@ -44,7 +44,7 @@ public class FrogSqlParameterVisitor extends FrogSqlBaseVisitor<Void> implements
 
     @Override
     public Void visitInsert(FrogSqlParser.InsertContext ctx) {
-        operatorType = OperatorType.UPDATE;
+        operatorType = OperatorType.INSERT;
         return visitChildren(ctx);
     }
 
@@ -56,13 +56,13 @@ public class FrogSqlParameterVisitor extends FrogSqlBaseVisitor<Void> implements
 
     @Override
     public Void visitDelete(FrogSqlParser.DeleteContext ctx) {
-        operatorType = OperatorType.UPDATE;
+        operatorType = OperatorType.DELETE;
         return visitChildren(ctx);
     }
 
     @Override
     public Void visitSelect(FrogSqlParser.SelectContext ctx) {
-        operatorType = OperatorType.QUERY;
+        operatorType = OperatorType.SELECT;
         return visitChildren(ctx);
     }
 

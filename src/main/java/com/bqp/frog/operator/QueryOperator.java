@@ -41,7 +41,7 @@ public class QueryOperator extends BaseOperator {
                          ParseTree tree) {
 
         super(daoClass, methodDescriptor, bindingParameters, tree);
-
+        init(methodDescriptor);
         if (returnDescriptor.isCollection()
                 || returnDescriptor.isList()
                 || returnDescriptor.isLinkedList()) {
@@ -67,17 +67,14 @@ public class QueryOperator extends BaseOperator {
         DefaultInvocationContext invocationContext = DefaultInvocationContext.create(parameterContext, args);
         new FrogSqlRender(invocationContext, bindingParameterInvokers, typeHandlers).visit(tree);
         BoundSql boundSql = invocationContext.getBoundSql();
-        LOGGER.debug("bound sql generate by frog: " + boundSql.toString());
-        System.out.println("bound sql generate by frog: " + boundSql.toString());
-
-
-        return null;
+        LOGGER.info("bound sql generate by frog: " + boundSql.toString());
+        return executeFromDb(dataSource, boundSql);
     }
 
     private Object executeFromDb(final DataSource ds, final BoundSql boundSql) {
         Object r;
         boolean success = false;
-        long now = System.nanoTime();
+        long now = System.currentTimeMillis();
         try {
 
             //
@@ -107,7 +104,7 @@ public class QueryOperator extends BaseOperator {
 
             success = true;
         } finally {
-            long cost = System.nanoTime() - now;
+            long cost = System.currentTimeMillis() - now;
             System.out.println("--quety cost -- " + cost);
         }
         return r;

@@ -45,7 +45,7 @@ public class Frog {
     }
 
 
-    public static QueryOperator getOperator(Class<?> daoClass, Method method) {
+    public static BaseOperator getOperator(Class<?> daoClass, Method method) {
 
         MethodDescriptor methodDescriptor = getMethodDescriptor(daoClass, method, true);
         List<BindingParameter> bindingParameters = new ArrayList<>();
@@ -61,8 +61,13 @@ public class Frog {
         frogSqlVisitor.visit(tree);
         OperatorType operatorType = frogSqlVisitor.getOperatorType();
 
-        // TODO 根据不同的operatorType进行实例化
-        QueryOperator operator = new QueryOperator(daoClass, methodDescriptor, bindingParameters, tree);
+        BaseOperator operator;
+        if (operatorType == OperatorType.SELECT) {
+            operator = new QueryOperator(daoClass, methodDescriptor, bindingParameters, tree);
+        } else {
+            operator = new UpdateOperator(daoClass, methodDescriptor, bindingParameters, tree, operatorType);
+        }
+
         return operator;
     }
 }

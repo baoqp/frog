@@ -1,5 +1,7 @@
 package com.bqp.frog.descriptor;
 
+import com.bqp.frog.annotation.ReturnGeneratedId;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -92,7 +94,7 @@ public class MethodDescriptor {
         cachedSQL = sql;
         return cachedSQL;*/
 
-       return null;
+        return null;
     }
 
     /*
@@ -129,10 +131,13 @@ public class MethodDescriptor {
         return cacheAnno != null && cacheIgnoredAnno == null;
     }
 
+
+    */
+
+
     public boolean isReturnGeneratedId() {
         return isAnnotationPresent(ReturnGeneratedId.class) ||
                 (name != null && name.contains("ReturnGeneratedId"));
     }
-    */
 
 }

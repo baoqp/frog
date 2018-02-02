@@ -5,9 +5,13 @@ package com.bqp.frog.operator;
  */
 public enum OperatorType {
 
-    QUERY,
+    SELECT,
 
     UPDATE,
+
+    INSERT,
+
+    DELETE,
 
     OTHERS;
 }

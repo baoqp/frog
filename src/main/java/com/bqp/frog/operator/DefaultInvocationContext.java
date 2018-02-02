@@ -52,7 +52,7 @@ public class DefaultInvocationContext implements InvocationContext {
     @Override
     public Object getNullableBindingValue(BindingParameterInvoker invoker) {
         String key = getCacheKey(invoker);
-        if (cache.containsKey(key)) { // 有可能缓存null对象
+        if (cache.containsKey(key)) {
             return cache.get(key);
         }
         String parameterName = invoker.getBindingParameter().getParameterName();

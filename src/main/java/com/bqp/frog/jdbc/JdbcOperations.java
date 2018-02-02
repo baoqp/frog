@@ -1,6 +1,5 @@
 package com.bqp.frog.jdbc;
 
-
 import com.bqp.frog.exception.DataAccessException;
 import com.bqp.frog.util.ListSupplier;
 import com.bqp.frog.util.SetSupplier;
@@ -34,6 +33,5 @@ public interface JdbcOperations {
 
     int update(DataSource ds, BoundSql boundSql, GeneratedKeyHolder holder)
             throws DataAccessException;
-
 
 }

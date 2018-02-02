@@ -26,7 +26,7 @@ public class GetterInvokerImpl extends MethodNamedObject implements GetterInvoke
         super(name, method);
         Getter getterAnno = method.getAnnotation(Getter.class);
 
-        TypeToken<?> returnToken = TypeToken.of(method.getGenericReturnType());
+        TypeToken<?> returnToken = TypeToken.of(method.getGenericReturnType()); // getter的返回类型
 
         if (getterAnno != null) {
             // 需要确保Getter注解的getter方法返回的类型是Getter注解中GetterFunction输入参数的子类型，否则报错
@@ -76,11 +76,11 @@ public class GetterInvokerImpl extends MethodNamedObject implements GetterInvoke
 
     @Override
     public Type getReturnType() {
-        return null;
+        return returnType;
     }
 
     @Override
     public Class<?> getReturnRawType() {
-        return null;
+        return returnRawType;
     }
 }
