@@ -1,18 +1,7 @@
 package com.bqp.frog.example;
 
-import com.bqp.frog.jdbc.JdbcTemplate;
-import com.bqp.frog.operator.BaseOperator;
-import com.bqp.frog.operator.Operator;
-import com.bqp.frog.operator.QueryOperator;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.bqp.frog.operator.Frog.getOperator;
 
 
 public class Main {
@@ -55,11 +44,11 @@ public class Main {
         System.out.println(operator.execute(arguments));*/
 
 
-        Method method = userDao.getDeclaredMethod("update", int.class, int.class);
+        /*Method method = userDao.getDeclaredMethod("update", int.class, int.class);
         BaseOperator operator = getOperator(userDao, method);
         operator.setDataSource(ds);
         operator.setJdbcOperations(new JdbcTemplate());
         Object[] arguments = {3, 18};
-        System.out.println(operator.execute(arguments));
+        System.out.println(operator.execute(arguments));*/
     }
 }

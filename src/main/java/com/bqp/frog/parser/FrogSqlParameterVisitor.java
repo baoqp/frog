@@ -16,13 +16,15 @@ import java.util.regex.Pattern;
  */
 public class FrogSqlParameterVisitor extends FrogSqlBaseVisitor<Void> implements OperatorTypeVisitor<Void> {
 
-    private Pattern parameterPattern = Pattern.compile(":(\\w+)((\\.\\w+)*)", Pattern.CASE_INSENSITIVE);
+    Pattern parameterPattern = Pattern.compile(":(\\w+)((\\.\\w+)*)", Pattern.CASE_INSENSITIVE);
 
-    private Pattern iterableParameter = Pattern.compile("in\\s+:(\\w+)((\\.\\w+)*)", Pattern.CASE_INSENSITIVE);
+    Pattern iterableParameter = Pattern.compile("in\\s+:(\\w+)((\\.\\w+)*)", Pattern.CASE_INSENSITIVE);
 
     List<BindingParameter> parameters;
 
     OperatorType operatorType = OperatorType.OTHERS;
+
+    boolean useGlobalTable;
 
     boolean flag = false;
 
@@ -41,6 +43,14 @@ public class FrogSqlParameterVisitor extends FrogSqlBaseVisitor<Void> implements
         return operatorType;
     }
 
+    @Override
+    public boolean isUseGlobalTable() {
+        if (!flag) {
+            throw new DescriptionException("before call method isUseGlobalTable on " +
+                    "FrogSqlParameterVisitor you should call visit method first ");
+        }
+        return useGlobalTable;
+    }
 
     @Override
     public Void visitInsert(FrogSqlParser.InsertContext ctx) {
@@ -64,6 +74,13 @@ public class FrogSqlParameterVisitor extends FrogSqlBaseVisitor<Void> implements
     public Void visitSelect(FrogSqlParser.SelectContext ctx) {
         operatorType = OperatorType.SELECT;
         return visitChildren(ctx);
+    }
+
+
+    @Override
+    public Void visitGlobalTable(FrogSqlParser.GlobalTableContext ctx) {
+        useGlobalTable = true;
+        return super.visitGlobalTable(ctx);
     }
 
 

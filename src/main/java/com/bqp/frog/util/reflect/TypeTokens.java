@@ -63,4 +63,23 @@ public class TypeTokens {
         return new Tuple(firstToken, secondToken);
     }
 
+
+    public static TypeToken resolveFatherClass(TypeToken<?> typeToken, Class<?> clazz) {
+        Set<TypeToken<?>> fathers = getTypes(typeToken);
+        TypeToken token = null;
+
+        for (TypeToken<?> father : fathers) {
+            if (clazz.equals(father.getRawType())) {
+                token = father.resolveType(clazz.getTypeParameters()[0]);
+                if (Object.class.equals(token.getRawType())) {
+                    token = TypeToken.of(Object.class);
+                }
+            }
+        }
+        if (token == null) {
+            throw new IllegalStateException();
+        }
+        return token;
+    }
+
 }

@@ -46,8 +46,10 @@ public class Methods {
 
 
     public static MethodDescriptor getMethodDescriptor(Class<?> daoClass, Method method, boolean isUseActualParamName) {
+
         List<Annotation> mas = new LinkedList<Annotation>();
 
+        // method 所在 class 的注解也要保存
         for (Annotation a : method.getAnnotations()) {
             mas.add(a);
         }

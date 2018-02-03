@@ -6,7 +6,7 @@ import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.jdbc.JdbcOperations;
 import com.bqp.frog.jdbc.type.TypeHandler;
 import com.bqp.frog.jdbc.type.TypeHandlerRegistry;
-import com.bqp.frog.parser.FrogSqlVisitor;
+import com.bqp.frog.sharding.TableGenerator;
 import com.bqp.frog.util.reflect.TypeWrapper;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
@@ -46,15 +46,18 @@ public abstract class BaseOperator implements Operator {
 
     JdbcOperations jdbcOperations;
 
+    TableGenerator tableGenerator;
+
     public BaseOperator(Class<?> daoClass,
                         MethodDescriptor methodDescriptor,
                         List<BindingParameter> bindingParameters,
-                        ParseTree tree) {
+                        ParseTree tree,
+                        ParameterContext parameterContext) {
         this.daoClass = daoClass;
         this.methodDescriptor = methodDescriptor;
         this.bindingParameters = bindingParameters;
         this.tree = tree;
-        this.parameterContext = DefaultParameterContext.create(this.methodDescriptor.getParameterDescriptors());
+        this.parameterContext = parameterContext;
 
         bindingParameterInvokers = new ArrayList<>();
         typeHandlers = new ArrayList<>();
@@ -94,7 +97,6 @@ public abstract class BaseOperator implements Operator {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
 
     public JdbcOperations getJdbcOperations() {
         return jdbcOperations;

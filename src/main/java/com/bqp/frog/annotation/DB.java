@@ -11,4 +11,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DB {
+
+    /**
+     * 数据源工厂名
+     *
+     * @return
+     */
+    String name() default "default";
+
+    String table() default "";
 }

@@ -10,6 +10,8 @@ import com.bqp.frog.parser.FrogSqlLexer;
 import com.bqp.frog.parser.FrogSqlParameterVisitor;
 import com.bqp.frog.parser.FrogSqlParser;
 import com.bqp.frog.parser.OperatorTypeVisitor;
+import com.bqp.frog.sharding.TableGenerator;
+import com.bqp.frog.sharding.TableGeneratorFactory;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -31,6 +33,9 @@ public class OperatorFactory {
 
     private MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper;
 
+    private TableGeneratorFactory tableGeneratorFactory;
+
+
     public OperatorFactory(DataSourceGroup dataSourceGroup, MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper) {
         this.dataSourceGroup = dataSourceGroup;
         this.masterSlaveDataSourceWrapper = masterSlaveDataSourceWrapper;
@@ -50,15 +55,23 @@ public class OperatorFactory {
         ParseTree tree = parser.sql(); // parse
         OperatorTypeVisitor frogSqlVisitor = new FrogSqlParameterVisitor(bindingParameters);
         frogSqlVisitor.visit(tree);
+
+        boolean useGlobalTable = frogSqlVisitor.isUseGlobalTable();
         OperatorType operatorType = frogSqlVisitor.getOperatorType();
+        ParameterContext parameterContext = DefaultParameterContext.create(methodDescriptor.getParameterDescriptors());
+
+        TableGenerator tableGenerator = tableGeneratorFactory.getTableGenerator(
+                methodDescriptor.getShardingAnno(), methodDescriptor.getGlobalTable(), useGlobalTable, parameterContext);
 
         BaseOperator operator;
         if (operatorType == OperatorType.SELECT) {
-            operator = new QueryOperator(daoClass, methodDescriptor, bindingParameters, tree);
+            operator = new QueryOperator(daoClass, methodDescriptor, bindingParameters, tree, parameterContext);
         } else {
-            operator = new UpdateOperator(daoClass, methodDescriptor, bindingParameters, tree, operatorType);
+            operator = new UpdateOperator(daoClass, methodDescriptor, bindingParameters, tree, operatorType, parameterContext);
         }
-        
+
+        operator.setDataSourceGroup(dataSourceGroup);
+        operator.setMasterSlaveDataSourceWrapper(masterSlaveDataSourceWrapper);
 
         // 构造表生成器
         /*boolean isSqlUseGlobalTable = !rootNode.getASTGlobalTables().isEmpty();
@@ -79,7 +92,6 @@ public class OperatorFactory {
         operator.setJdbcOperations(jdbcOperations);*/
         return operator;
     }
-
 
 
 }

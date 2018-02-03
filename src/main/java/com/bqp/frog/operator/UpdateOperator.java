@@ -27,8 +27,9 @@ public class UpdateOperator extends BaseOperator {
     public UpdateOperator(Class<?> daoClass,
                           MethodDescriptor methodDescriptor,
                           List<BindingParameter> bindingParameters,
-                          ParseTree tree, OperatorType operatorType) {
-        super(daoClass, methodDescriptor, bindingParameters, tree);
+                          ParseTree tree, OperatorType operatorType,
+                          ParameterContext parameterContext) {
+        super(daoClass, methodDescriptor, bindingParameters, tree, parameterContext);
 
         init(methodDescriptor, operatorType);
     }

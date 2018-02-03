@@ -40,9 +40,9 @@ public class QueryOperator extends BaseOperator {
     public QueryOperator(Class<?> daoClass,
                          MethodDescriptor methodDescriptor,
                          List<BindingParameter> bindingParameters,
-                         ParseTree tree) {
+                         ParseTree tree, ParameterContext parameterContext) {
 
-        super(daoClass, methodDescriptor, bindingParameters, tree);
+        super(daoClass, methodDescriptor, bindingParameters, tree, parameterContext);
         init(methodDescriptor);
         if (returnDescriptor.isCollection()
                 || returnDescriptor.isList()

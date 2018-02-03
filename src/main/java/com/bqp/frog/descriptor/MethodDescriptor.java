@@ -1,6 +1,10 @@
 package com.bqp.frog.descriptor;
 
+import com.bqp.frog.annotation.DB;
 import com.bqp.frog.annotation.ReturnGeneratedId;
+import com.bqp.frog.annotation.Sharding;
+import com.bqp.frog.exception.DescriptionException;
+import com.bqp.frog.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -98,18 +102,7 @@ public class MethodDescriptor {
     }
 
     /*
-    public String getGlobalTable() {
-        DB dbAnno = getAnnotation(DB.class);
-        if (dbAnno == null) {
-            throw new DescriptionException("dao interface expected one @DB " +
-                    "annotation but not found");
-        }
-        String table = null;
-        if (Strings.isNotEmpty(dbAnno.table())) {
-            table = dbAnno.table();
-        }
-        return table;
-    }
+
 
     public String getDataSourceFactoryName() {
         DB dbAnno = getAnnotation(DB.class);
@@ -134,6 +127,22 @@ public class MethodDescriptor {
 
     */
 
+    public Sharding getShardingAnno() {
+        return getAnnotation(Sharding.class);
+    }
+
+    public String getGlobalTable() {
+        DB dbAnno = getAnnotation(DB.class);
+        if (dbAnno == null) {
+            throw new DescriptionException("dao interface expected one @DB " +
+                    "annotation but not found");
+        }
+        String table = null;
+        if (Strings.isNotEmpty(dbAnno.table())) {
+            table = dbAnno.table();
+        }
+        return table;
+    }
 
     public boolean isReturnGeneratedId() {
         return isAnnotationPresent(ReturnGeneratedId.class) ||
