@@ -15,6 +15,7 @@ import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+// TODO 只支持一个属性
 /**
  * @author ash
  */
