@@ -1,54 +1,79 @@
 package com.bqp.frog.example;
 
+import com.bqp.frog.annotation.DB;
+import com.bqp.frog.annotation.DatabaseShardingBy;
+import com.bqp.frog.annotation.SQL;
+import com.bqp.frog.annotation.Sharding;
+import com.bqp.frog.datasource.DataSourceGroup;
+import com.bqp.frog.datasource.MasterSlaveDataSourceWrapper;
+import com.bqp.frog.operator.Frog;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import java.util.List;
 
 
 public class Main {
 
+    @DB
+    @Sharding(databaseShardingStrategy = UserDataSourceSharding.class)
+    interface UserDao {
+
+        // 插入数据
+        @SQL("insert into user(name, age) values(:name, :age)")
+        void add(String name, @DatabaseShardingBy int age);
+
+        // 根据name取num的总和
+        @SQL("select * from user where age >= :age")
+        List<User> getUsers(@DatabaseShardingBy int age);
+
+    }
+
     public static void main(String[] args) throws Exception {
 
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://localhost:3306/Demo");
-        config.setUsername("root");
-        config.setPassword("");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        HikariDataSource ds = new HikariDataSource(config);
+        HikariConfig masterConfig = new HikariConfig();
+        masterConfig.setJdbcUrl("jdbc:mysql://localhost:3306/demo1");
+        masterConfig.setUsername("root");
+        masterConfig.setPassword("");
+        HikariDataSource masterDS = new HikariDataSource(masterConfig);
+
+        HikariConfig slaveConfig = new HikariConfig();
+        slaveConfig.setJdbcUrl("jdbc:mysql://localhost:3306/demo2");
+        slaveConfig.setUsername("root");
+        slaveConfig.setPassword("");
+        HikariDataSource slaveDS = new HikariDataSource(slaveConfig);
+
+        MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper = new MasterSlaveDataSourceWrapper(masterDS, slaveDS);
 
 
-       /* Method method = userDao.getDeclaredMethod("getUsers", int.class);
-        BaseOperator operator = getOperator(userDao, method);
-        operator.setDataSource(ds);
-        operator.setJdbcOperations(new JdbcTemplate());
-        Object[] arguments = {20};
-        System.out.println(operator.execute(arguments));*/
+        HikariConfig masterConfig2 = new HikariConfig();
+        masterConfig2.setJdbcUrl("jdbc:mysql://localhost:3306/demo3");
+        masterConfig2.setUsername("root");
+        masterConfig2.setPassword("");
+        HikariDataSource masterDS2 = new HikariDataSource(masterConfig2);
 
+        HikariConfig slaveConfig2 = new HikariConfig();
+        slaveConfig2.setJdbcUrl("jdbc:mysql://localhost:3306/demo4");
+        slaveConfig2.setUsername("root");
+        slaveConfig2.setPassword("");
+        HikariDataSource slaveDS2 = new HikariDataSource(slaveConfig2);
 
-       /* Method method = userDao.getDeclaredMethod("save", User.class);
-        BaseOperator  operator = getOperator(userDao, method);
-        operator.setDataSource(ds);
-        operator.setJdbcOperations(new JdbcTemplate());
-        User user = new User("Han Meimei", 18);
-        Object[] arguments2 = {user};
-        System.out.println(operator.execute(arguments2));*/
+        MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper2 = new MasterSlaveDataSourceWrapper(masterDS2, slaveDS2);
 
-        /*Method method = userDao.getDeclaredMethod("getUsers", List.class);
-        BaseOperator operator = getOperator(userDao, method);
-        operator.setDataSource(ds);
-        operator.setJdbcOperations(new JdbcTemplate());
-        List<Integer> ages = new ArrayList<>();
-        ages.add(18); ages.add(20);
-        Object[] arguments = {ages};
-        System.out.println(operator.execute(arguments));*/
+        DataSourceGroup dataSourceGroup = new DataSourceGroup();
+        dataSourceGroup.add("ds1", masterSlaveDataSourceWrapper);
+        dataSourceGroup.add("ds2", masterSlaveDataSourceWrapper2);
 
+        Frog frog = new Frog(dataSourceGroup);
 
-        /*Method method = userDao.getDeclaredMethod("update", int.class, int.class);
-        BaseOperator operator = getOperator(userDao, method);
-        operator.setDataSource(ds);
-        operator.setJdbcOperations(new JdbcTemplate());
-        Object[] arguments = {3, 18};
-        System.out.println(operator.execute(arguments));*/
+        UserDao userDao = frog.create(UserDao.class);
+
+        userDao.add("Nancy", 8);
+        userDao.add("Shelly", 28);
+
+        //List<User> users = userDao.getUsers(18);
+
+        //System.out.println(users);
+
     }
 }

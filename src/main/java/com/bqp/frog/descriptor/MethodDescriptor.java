@@ -72,61 +72,6 @@ public class MethodDescriptor {
         return parameterDescriptors;
     }
 
-    public String getSQL() {
-       /* if (cachedSQL != null) {
-            return cachedSQL;
-        }
-        SQL sqlAnno = getAnnotation(SQL.class);
-        String sql;
-        if (sqlAnno != null) {
-            sql = sqlAnno.value();
-        } else {
-            UseSqlGenerator useSqlGeneratorAnno = getAnnotation(UseSqlGenerator.class);
-            if (useSqlGeneratorAnno == null) {
-                throw new DescriptionException("each method expected one of @SQL or @UseSqlGenerator annotation but not found");
-            }
-            SqlGenerator sqlGenerator = Reflection.instantiateClass(useSqlGeneratorAnno.value());
-            sql = sqlGenerator.generateSql(this);
-        }
-        if (Strings.isEmpty(sql)) {
-            throw new DescriptionException("sql is null or empty");
-        }
-        if (logger.isDebugEnabled()) {
-            // TODO 补全日志
-            logger.debug(sql);
-        }
-        cachedSQL = sql;
-        return cachedSQL;*/
-
-        return null;
-    }
-
-    /*
-
-
-    public String getDataSourceFactoryName() {
-        DB dbAnno = getAnnotation(DB.class);
-        if (dbAnno == null) {
-            throw new DescriptionException("dao interface expected one @DB " +
-                    "annotation but not found");
-        }
-        return dbAnno.name();
-    }
-
-    @Nullable
-    public Sharding getShardingAnno() {
-        return getAnnotation(Sharding.class);
-    }
-
-    public boolean isUseCache() {
-        CacheIgnored cacheIgnoredAnno = getAnnotation(CacheIgnored.class);
-        Cache cacheAnno = getAnnotation(Cache.class);
-        return cacheAnno != null && cacheIgnoredAnno == null;
-    }
-
-
-    */
-
     public Sharding getShardingAnno() {
         return getAnnotation(Sharding.class);
     }

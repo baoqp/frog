@@ -4,6 +4,7 @@ import com.bqp.frog.exception.EmptyObjectException;
 import com.bqp.frog.jdbc.type.TypeHandler;
 import com.bqp.frog.operator.BindingParameterInvoker;
 import com.bqp.frog.operator.InvocationContext;
+import com.bqp.frog.sharding.TableGenerator;
 import com.bqp.frog.util.Iterables;
 import com.google.common.reflect.TypeToken;
 
@@ -12,9 +13,14 @@ import java.util.List;
 
 // 每执行一次sql，都要调用render
 public class FrogSqlRender extends FrogSqlBaseVisitor<String> {
+
+
+
     StringBuilder sqlBuffer;
 
     InvocationContext invocationContext;
+
+    TableGenerator tableGenerator;
 
     List<BindingParameterInvoker> bindingParameterInvokers;
 
@@ -23,9 +29,11 @@ public class FrogSqlRender extends FrogSqlBaseVisitor<String> {
     int idx;
 
     public FrogSqlRender(InvocationContext invocationContext,
+                         TableGenerator tableGenerator,
                          List<BindingParameterInvoker> bindingParameterInvokers,
                          List<TypeHandler<?>> typeHandlers) {
         this.invocationContext = invocationContext;
+        this.tableGenerator = tableGenerator;
         this.bindingParameterInvokers = bindingParameterInvokers;
         this.typeHandlers = typeHandlers;
         idx = 0;
@@ -114,10 +122,9 @@ public class FrogSqlRender extends FrogSqlBaseVisitor<String> {
         return visitChildren(ctx);
     }
 
-    // TODO
     @Override
     public String visitGlobalTable(FrogSqlParser.GlobalTableContext ctx) {
-        invocationContext.writeToSqlBuffer(ctx.getText());
+        invocationContext.writeToSqlBuffer(tableGenerator.getTable(invocationContext));
         return visitChildren(ctx);
     }
 

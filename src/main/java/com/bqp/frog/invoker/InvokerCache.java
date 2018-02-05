@@ -76,7 +76,6 @@ public class InvokerCache {
                 String name = pm.getName();
                 Method readMethod = pm.getReadMethod();
                 Method writeMethod = pm.getWriteMethod();
-                // TODO 注解传入
                 GetterInvokerImpl gi = new GetterInvokerImpl(name, readMethod);
                 gim.put(name, gi);
                 gis.add(gi);

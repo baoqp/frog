@@ -93,15 +93,40 @@ public class Reflection {
         getAnnotations(clazz.getSuperclass(), annos);
     }
 
+
     public static Object invokeMethod(Object obj, String methodName, Class<?>[] parameterTypes, Object[] args) throws ReflectionException {
-        try {
-            Class<?> clazz = obj.getClass();
-            Method method = clazz.getMethod(methodName, parameterTypes);
-            method.setAccessible(true);
-            return method.invoke(obj, args);
-        }catch (Exception e) {
-            throw new ReflectionException("调用方法 " + methodName + " 出错", e);
+        Class<?> clazz = obj.getClass();
+        Method method = null;
+        Throwable throwable = null;
+        while (clazz != Object.class) {
+            try {
+                method = clazz.getDeclaredMethod(methodName, parameterTypes);
+                if (method != null && !isAbstract(method)) { // method 不为抽象的
+                    break;
+                } else {
+                    method = null;
+                }
+            } catch (NoSuchMethodException NSE) {
+                throwable = NSE;
+            }
+            clazz = clazz.getSuperclass();
         }
+        if (method != null) {
+            method.setAccessible(true);
+            try {
+                return method.invoke(obj, args);
+
+            } catch (Exception e) {
+                throwable = e;
+            }
+        }
+
+        throw new ReflectionException("调用方法 " + methodName + " 出错", throwable);
     }
+
+    private static boolean isAbstract(Method m) {
+        return (m.getModifiers() & Modifier.ABSTRACT) > 0;
+    }
+
 
 }

@@ -4,6 +4,7 @@ import com.bqp.frog.annotation.DatabaseShardingBy;
 import com.bqp.frog.annotation.Sharding;
 import com.bqp.frog.datasource.DataSourceGroup;
 import com.bqp.frog.datasource.DataSourceType;
+import com.bqp.frog.datasource.MasterSlaveDataSourceWrapper;
 import com.bqp.frog.descriptor.ParameterDescriptor;
 import com.bqp.frog.exception.DescriptionException;
 import com.bqp.frog.exception.IncorrectParameterTypeException;
@@ -26,39 +27,54 @@ public class DataSourceGeneratorFactory {
 
     private final DataSourceGroup dataSourceGroup;
 
-    public DataSourceGeneratorFactory(DataSourceGroup dataSourceGroup) {
+    private final MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper;
+
+    public DataSourceGeneratorFactory(DataSourceGroup dataSourceGroup
+            , MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper) {
+
         this.dataSourceGroup = dataSourceGroup;
+        this.masterSlaveDataSourceWrapper = masterSlaveDataSourceWrapper;
     }
+
 
     public DataSourceGenerator getDataSourceGenerator(
             DataSourceType dataSourceType, Sharding shardingAnno,
-            String dataSourceFactoryName, ParameterContext context) {
+            ParameterContext context) {
 
-        DatabaseShardingStrategy strategy = getDatabaseShardingStrategy(shardingAnno);
-        TypeToken<?> strategyToken = null;
-        if (strategy != null) {
-            strategyToken = TypeTokens.resolveFatherClass(TypeToken.of(strategy.getClass()),
-                    DatabaseShardingStrategy.class);
-        }
+        boolean isDataSourceSharding = false;
+        DatabaseShardingStrategy strategy = null;
 
-
-        int shardingParameterNum = 0;
-        String shardingParameterName = null;
-        String shardingParameterProperty = null;
-        for (ParameterDescriptor pd : context.getParameterDescriptors()) {
-            DatabaseShardingBy databaseShardingByAnno = pd.getAnnotation(DatabaseShardingBy.class);
-            if (databaseShardingByAnno != null) {
-                shardingParameterName = context.getParameterNameByPosition(pd.getPosition());
-                shardingParameterProperty = databaseShardingByAnno.value();
-                shardingParameterNum++;
-                break;
+        if (shardingAnno != null && dataSourceGroup != null) {
+            strategy = getDatabaseShardingStrategy(shardingAnno);
+            if (strategy != null) {
+                isDataSourceSharding = true;
             }
         }
+
         DataSourceGenerator dataSourceGenerator = null;
-        if (strategy != null) {
+
+        if (isDataSourceSharding) {
+            TypeToken<?> strategyToken = TypeTokens.resolveFatherClass(
+                    TypeToken.of(strategy.getClass()), DatabaseShardingStrategy.class);
+
+            // TODO 目前只支持一个参数用作分片
+            int shardingParameterNum = 0;
+            String shardingParameterName = null;
+            String shardingParameterProperty = null;
+            for (ParameterDescriptor pd : context.getParameterDescriptors()) {
+                DatabaseShardingBy databaseShardingByAnno = pd.getAnnotation(DatabaseShardingBy.class);
+                if (databaseShardingByAnno != null) {
+                    shardingParameterName = context.getParameterNameByPosition(pd.getPosition());
+                    shardingParameterProperty = databaseShardingByAnno.value();
+                    shardingParameterNum++;
+                    break;
+                }
+            }
+
             if (shardingParameterNum == 1) {
                 BindingParameterInvoker shardingParameterInvoker
-                        = context.getBindingParameterInvoker(BindingParameter.create(shardingParameterName, shardingParameterProperty, null));
+                        = context.getBindingParameterInvoker(
+                        BindingParameter.create(shardingParameterName, shardingParameterProperty, null));
                 Type shardingParameterType = shardingParameterInvoker.getTargetType();
                 TypeWrapper tw = new TypeWrapper(shardingParameterType);
                 Class<?> mappedClass = tw.getMappedClass();
@@ -70,18 +86,19 @@ public class DataSourceGeneratorFactory {
                 if (!strategyToken.isSupertypeOf(shardToken.wrap())) {
                     throw new ClassCastException("DatabaseShardingStrategy[" + strategy.getClass() + "]'s " +
                             "generic type[" + strategyToken.getType() + "] must be assignable from " +
-                            "the type of parameter Modified @DatabaseShardingBy [" + shardToken.getType() + "], " +
-                            "please note that @ShardingBy = @TableShardingBy + @DatabaseShardingBy");
+                            "the type of parameter Modified @DatabaseShardingBy [" + shardToken.getType() + "].");
                 }
 
-
-                dataSourceGenerator = new ShardedDataSourceGenerator(dataSourceGroup, shardingParameterInvoker, strategy);
+                dataSourceGenerator = new ShardedDataSourceGenerator(dataSourceGroup, dataSourceType, shardingParameterInvoker, strategy);
             } else {
                 throw new DescriptionException("if @Sharding.databaseShardingStrategy is defined, " +
-                        "need one and only one @DatabaseShardingBy on method's parameter but found " + shardingParameterNum + ", " +
-                        "please note that @ShardingBy = @TableShardingBy + @DatabaseShardingBy");
+                        "need one and only one @DatabaseShardingBy on method's parameter but found " + shardingParameterNum);
             }
+
+        } else {
+            dataSourceGenerator = new SimpleDataSourceGenerator(masterSlaveDataSourceWrapper, dataSourceType);
         }
+
 
         return dataSourceGenerator;
 

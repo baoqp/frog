@@ -10,6 +10,7 @@ import sun.net.www.content.text.Generic;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -75,6 +76,27 @@ public class Methods {
 
         return MethodDescriptor.create(method.getName(), daoClass, rd, pds);
     }
+
+
+    public static List<Method> listMethods(Class<?> clazz) {
+        Method[] allMethods = clazz.getMethods();
+        List<Method> methods = new ArrayList<Method>();
+        for (Method method : allMethods) {
+            if (!isDefault(method)) {
+                methods.add(method);
+            }
+        }
+        return methods;
+    }
+
+    // java8: 接口中的默认方法
+    private static boolean isDefault(Method m) {
+        // Default methods are public non-abstract instance methods
+        // declared in an interface.
+        return ((m.getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) ==
+                Modifier.PUBLIC) && m.getDeclaringClass().isInterface();
+    }
+
 
 
 }

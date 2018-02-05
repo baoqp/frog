@@ -1,11 +1,10 @@
 package com.bqp.frog.operator;
 
-import com.bqp.frog.datasource.DataSourceGroup;
-import com.bqp.frog.datasource.MasterSlaveDataSourceWrapper;
 import com.bqp.frog.descriptor.MethodDescriptor;
 import com.bqp.frog.jdbc.JdbcOperations;
 import com.bqp.frog.jdbc.type.TypeHandler;
 import com.bqp.frog.jdbc.type.TypeHandlerRegistry;
+import com.bqp.frog.sharding.DataSourceGenerator;
 import com.bqp.frog.sharding.TableGenerator;
 import com.bqp.frog.util.reflect.TypeWrapper;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -38,13 +37,11 @@ public abstract class BaseOperator implements Operator {
 
     ParameterContext parameterContext;
 
-    DataSourceGroup dataSourceGroup;
-
-    MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper;
-
     DataSource dataSource;
 
     JdbcOperations jdbcOperations;
+
+    DataSourceGenerator dataSourceGenerator;
 
     TableGenerator tableGenerator;
 
@@ -74,20 +71,20 @@ public abstract class BaseOperator implements Operator {
 
     }
 
-    public DataSourceGroup getDataSourceGroup() {
-        return dataSourceGroup;
+    public DataSourceGenerator getDataSourceGenerator() {
+        return dataSourceGenerator;
     }
 
-    public void setDataSourceGroup(DataSourceGroup dataSourceGroup) {
-        this.dataSourceGroup = dataSourceGroup;
+    public void setDataSourceGenerator(DataSourceGenerator dataSourceGenerator) {
+        this.dataSourceGenerator = dataSourceGenerator;
     }
 
-    public MasterSlaveDataSourceWrapper getMasterSlaveDataSourceWrapper() {
-        return masterSlaveDataSourceWrapper;
+    public TableGenerator getTableGenerator() {
+        return tableGenerator;
     }
 
-    public void setMasterSlaveDataSourceWrapper(MasterSlaveDataSourceWrapper masterSlaveDataSourceWrapper) {
-        this.masterSlaveDataSourceWrapper = masterSlaveDataSourceWrapper;
+    public void setTableGenerator(TableGenerator tableGenerator) {
+        this.tableGenerator = tableGenerator;
     }
 
     public DataSource getDataSource() {

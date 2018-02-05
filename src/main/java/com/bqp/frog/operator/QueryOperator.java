@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO 写成单例
+ * TODO 最好写成单例
  *
  * @author Bao Qingping
  */
@@ -35,6 +35,7 @@ public class QueryOperator extends BaseOperator {
     ReturnDescriptor returnDescriptor;
 
     ListSupplier listSupplier;
+
     SetSupplier setSupplier;
 
     public QueryOperator(Class<?> daoClass,
@@ -67,40 +68,40 @@ public class QueryOperator extends BaseOperator {
     public Object execute(Object[] args) {
         //构建InvocationContext, render sql, 执行sql
         DefaultInvocationContext invocationContext = DefaultInvocationContext.create(parameterContext, args);
-        new FrogSqlRender(invocationContext, bindingParameterInvokers, typeHandlers).visit(tree);
+        dataSource = dataSourceGenerator.getDataSource(invocationContext, daoClass);
+
+        new FrogSqlRender(invocationContext, tableGenerator, bindingParameterInvokers, typeHandlers).visit(tree);
+
         BoundSql boundSql = invocationContext.getBoundSql();
         LOGGER.info("bound sql generate by frog: " + boundSql.toString());
-        return executeFromDb(dataSource, boundSql);
+        return executeFromDb(boundSql);
     }
 
-    private Object executeFromDb(final DataSource ds, final BoundSql boundSql) {
+    private Object executeFromDb(final BoundSql boundSql) {
         Object r;
         boolean success = false;
         long now = System.currentTimeMillis();
         try {
 
-            //
             r = new QueryVisitor() {
-
                 @Override
                 Object visitForList() {
-                    return jdbcOperations.queryForList(ds, boundSql, listSupplier, rowMapper);
+                    return jdbcOperations.queryForList(dataSource, boundSql, listSupplier, rowMapper);
                 }
 
                 @Override
                 Object visitForSet() {
-                    return jdbcOperations.queryForSet(ds, boundSql, setSupplier, rowMapper);
+                    return jdbcOperations.queryForSet(dataSource, boundSql, setSupplier, rowMapper);
                 }
 
                 @Override
                 Object visitForArray() {
-                    return jdbcOperations.queryForArray(ds, boundSql, rowMapper);
-
+                    return jdbcOperations.queryForArray(dataSource, boundSql, rowMapper);
                 }
 
                 @Override
                 Object visitForObject() {
-                    return jdbcOperations.queryForObject(ds, boundSql, rowMapper);
+                    return jdbcOperations.queryForObject(dataSource, boundSql, rowMapper);
                 }
             }.visit();
 
@@ -150,7 +151,7 @@ public class QueryOperator extends BaseOperator {
 
         // 如果有已注册的TypeHandler
         if (TypeHandlerRegistry.hasTypeHandler(clazz)) { // 单列mapper
-            return new SingleColumnRowMapper<T>(clazz);
+            return new SingleColumnRowMapper<>(clazz);
         }
 
         // 类属性mapper

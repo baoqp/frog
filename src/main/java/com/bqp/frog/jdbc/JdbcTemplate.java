@@ -1,6 +1,7 @@
 package com.bqp.frog.jdbc;
 
 
+import com.bqp.frog.annotation.SQL;
 import com.bqp.frog.exception.DataAccessException;
 import com.bqp.frog.jdbc.type.TypeHandler;
 import com.bqp.frog.util.ListSupplier;
@@ -57,8 +58,8 @@ public class JdbcTemplate implements JdbcOperations {
     public int update(DataSource dataSource, BoundSql boundSql, GeneratedKeyHolder holder) throws DataAccessException {
         Connection conn = null;
         try {
-            conn = dataSource.getConnection(); // TODO
-        } catch (Exception e) {
+            conn = dataSource.getConnection();
+        } catch (SQLException e) {
             throw new DataAccessException("获取连接出错");
         }
 
@@ -84,19 +85,20 @@ public class JdbcTemplate implements JdbcOperations {
             }
             return r;
         } catch (SQLException e) {
-
+            closeResultSet(rs);
             rs = null;
             closeStatement(ps);
             ps = null;
-            //DataSourceUtils.releaseConnection(conn, dataSource);
-            //  conn.close();  //TODO
-            conn = null;
-
             throw new DataAccessException(e.getMessage());
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
-            //DataSourceUtils.releaseConnection(conn, dataSource); // TODO
+            try {
+                conn.close();
+            } catch (SQLException e) {
+
+            }
+            conn = null;
         }
     }
 
@@ -106,11 +108,10 @@ public class JdbcTemplate implements JdbcOperations {
 
         Connection conn = null;
         try {
-            conn = dataSource.getConnection(); // TODO
-        } catch (Exception e) {
+            conn = dataSource.getConnection();
+        } catch (SQLException e) {
             throw new DataAccessException("获取连接出错");
         }
-
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -118,7 +119,6 @@ public class JdbcTemplate implements JdbcOperations {
         try {
             ps = conn.prepareStatement(sql);
             setValues(ps, boundSql);
-
             rs = ps.executeQuery();
             return rse.extractData(rs);
         } catch (SQLException e) {
@@ -126,14 +126,16 @@ public class JdbcTemplate implements JdbcOperations {
             rs = null;
             closeStatement(ps);
             ps = null;
-            //DataSourceUtils.releaseConnection(conn, dataSource);
-            conn = null;
-
             throw new DataAccessException(e.getMessage());
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
-            //DataSourceUtils.releaseConnection(conn, dataSource);
+            try {
+                conn.close();
+            } catch (SQLException e) {
+
+            }
+            conn = null;
         }
     }
 

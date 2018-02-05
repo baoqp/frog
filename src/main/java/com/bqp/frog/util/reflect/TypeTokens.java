@@ -14,10 +14,9 @@ public class TypeTokens {
 
     @SuppressWarnings("unchecked")
     public static Set<TypeToken<?>> getTypes(TypeToken<?> typeToken) {
-        Set<TypeToken<?>> tokens = new HashSet<TypeToken<?>>();
+        Set<TypeToken<?>> tokens = new HashSet<>();
         tokens.add(typeToken);
         TypeToken<?> superclass = null;
-
 
         superclass = (TypeToken<?>) Reflection.invokeMethod(typeToken, "getGenericSuperclass",
                 new Class[]{}, new Object[]{});

@@ -61,7 +61,8 @@ public class UpdateOperator extends BaseOperator {
     @Override
     public Object execute(Object[] args) {
         DefaultInvocationContext invocationContext = DefaultInvocationContext.create(parameterContext, args);
-        new FrogSqlRender(invocationContext, bindingParameterInvokers, typeHandlers).visit(tree);
+        dataSource = dataSourceGenerator.getDataSource(invocationContext, daoClass);
+        new FrogSqlRender(invocationContext, tableGenerator, bindingParameterInvokers, typeHandlers).visit(tree);
         BoundSql boundSql = invocationContext.getBoundSql();
         LOGGER.info("bound sql generate by frog: " + boundSql.toString());
         return execute(invocationContext, boundSql);
@@ -69,9 +70,8 @@ public class UpdateOperator extends BaseOperator {
 
     public Object execute(InvocationContext context, final BoundSql boundSql) {
 
-        // TODO
-        /*DataSource ds = dataSourceGenerator.getDataSource(context, daoClass);
-        invocationInterceptorChain.intercept(boundSql, context, ds); */
+        // TODO 拦截链
+        /* invocationInterceptorChain.intercept(boundSql, context, ds); */
 
         Number r = executeDb(dataSource, boundSql);
         return transformer.transform(r);
